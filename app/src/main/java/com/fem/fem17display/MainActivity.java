@@ -448,6 +448,12 @@ public class MainActivity extends AppCompatActivity  implements Runnable, View.O
             }
             else if(action == VIEW_BLUETOOTH){
                 mBluetooth.setText(msgStr);
+                if(msgStr.contains("BTOK")){
+                    Bluetooth_Image.setImageResource(R.drawable.bluetooth);
+                }
+                else if(msgStr.contains("BTNO")){
+                    Bluetooth_Image.setImageResource(R.drawable.bluetooth_no);
+                }
             }
             else if(action == VIEW_LV){
                 mLV.setText(msgStr);
