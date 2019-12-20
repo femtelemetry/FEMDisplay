@@ -23,13 +23,17 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 import com.nifcloud.mbaas.core.NCMB;
 import com.nifcloud.mbaas.core.NCMBException;
 import com.nifcloud.mbaas.core.NCMBObject;
 import com.nifcloud.mbaas.core.DoneCallback;
 
-public class MainActivity extends AppCompatActivity  implements Runnable, View.OnClickListener {
+public class MainActivity extends AppCompatActivity  implements View.OnClickListener {
     /* tag */
     private static final String TAG = "BluetoothSample";
 
@@ -263,148 +267,163 @@ public class MainActivity extends AppCompatActivity  implements Runnable, View.O
         }
     }
 
-    @Override
-    public void run() {
+    private Runnable bluetooth_run = new Runnable() {
+        @Override
+        public void run() {
+                InputStream mmInStream = null;
 
-        InputStream mmInStream = null;
+                ShowMessage(VIEW_STATUS, "connecting...");
 
-        ShowMessage(VIEW_STATUS, "connecting...");
+                // 取得したデバイス名を使ってBluetoothでSocket接続
+                try {
 
-        // 取得したデバイス名を使ってBluetoothでSocket接続
-        try {
+                    mSocket = mDevice.createRfcommSocketToServiceRecord(MY_UUID);
+                    mSocket.connect();
+                    mmInStream = mSocket.getInputStream();
+                    mmOutputStream = mSocket.getOutputStream();
 
-            mSocket = mDevice.createRfcommSocketToServiceRecord(MY_UUID);
-            mSocket.connect();
-            mmInStream = mSocket.getInputStream();
-            mmOutputStream = mSocket.getOutputStream();
+                    ShowMessage(VIEW_BLUETOOTH, "BTOK");
 
-            ShowMessage(VIEW_BLUETOOTH, "BTOK");
+                    // InputStreamのバッファを格納
+                    byte[] buffer = new byte[1024];
 
-            // InputStreamのバッファを格納
-            byte[] buffer = new byte[1024];
+                    // 取得したバッファのサイズを格納
+                    int bytes;
 
-            // 取得したバッファのサイズを格納
-            int bytes;
+                    ShowMessage(VIEW_STATUS, "connected.");
 
-            ShowMessage(VIEW_STATUS, "connected.");
+                    connectFlg = true;
 
-            connectFlg = true;
+                    while (isRunning) {
 
-            while (isRunning) {
+                        // InputStreamの読み込み
+                        bytes = mmInStream.read(buffer);
+                        Log.i(TAG, "bytes=" + bytes);
+                        // String型に変換
+                        String readMsg = new String(buffer, 0, bytes);
 
-                // InputStreamの読み込み
-                bytes = mmInStream.read(buffer);
-                Log.i(TAG, "bytes=" + bytes);
-                // String型に変換
-                String readMsg = new String(buffer, 0, bytes);
+                        ShowMessage(VIEW_INPUT, readMsg.trim());
 
-                ShowMessage(VIEW_INPUT, readMsg.trim());
+                        // 情報が欠損なしで届いていれば解析　届く情報は F/(LV)/(HV)/(MT)/(INV)/(RTD)/(ERROR1),~,(ERROR4)/(CURR)/(TIME)/L
+                        if (readMsg.trim().startsWith("F") && readMsg.trim().endsWith("L")) {
+                            obj = new NCMBObject("Voltage");
 
-                // 情報が欠損なしで届いていれば解析　届く情報は F/(LV)/(HV)/(MT)/(INV)/(RTD)/(ERROR1),~,(ERROR4)/(CURR)/(TIME)/L
-                if (readMsg.trim().startsWith("F") && readMsg.trim().endsWith("L")) {
-                    obj = new NCMBObject("Voltage");
+                            Log.i(TAG, "value=" + readMsg.trim());
+                            String[] values;
+                            values = readMsg.trim().split("/", 0);
 
-                    Log.i(TAG, "value=" + readMsg.trim());
-                    String[] values;
-                    values = readMsg.trim().split("/", 0);
-
-                    if (!values[VIEW_LV].isEmpty()) {
-                        if (Float.parseFloat(values[VIEW_LV]) < 10.0) {
-                            if (values[VIEW_LV].length() >= 3) {
-                                values[VIEW_LV] = values[VIEW_LV].substring(0, 3);
+                            if (!values[VIEW_LV].isEmpty()) {
+                                if (Float.parseFloat(values[VIEW_LV]) < 10.0) {
+                                    if (values[VIEW_LV].length() >= 3) {
+                                        values[VIEW_LV] = values[VIEW_LV].substring(0, 3);
+                                    }
+                                } else {
+                                    if (values[VIEW_LV].length() >= 4) {
+                                        values[VIEW_LV] = values[VIEW_LV].substring(0, 4);
+                                    }
+                                }
                             }
-                        } else {
-                            if (values[VIEW_LV].length() >= 4) {
-                                values[VIEW_LV] = values[VIEW_LV].substring(0, 4);
+                            ShowMessage(VIEW_LV, values[VIEW_LV]);
+                            AddCloud("LV", values[VIEW_LV]);
+
+                            ShowMessage(VIEW_HV, values[VIEW_HV]);
+                            AddCloud("HV", values[VIEW_HV]);
+
+                            values[VIEW_MT] = values[VIEW_MT].split("\\.", 0)[0]; //整数にする
+                            ShowMessage(VIEW_MT, values[VIEW_MT]);
+                            AddCloud("MOTOR", values[VIEW_MT]);
+
+                            values[VIEW_INV] = values[VIEW_INV].split("\\.", 0)[0]; //整数にする
+                            ShowMessage(VIEW_INV, values[VIEW_INV]);
+                            AddCloud("INV", values[VIEW_INV]);
+
+                            if (values[VIEW_RTD].contains("1")) {
+                                values[VIEW_RTD] = "ON";
+                                AddCloud("RtD", "100");
+                                if (!(RtDFlag)) {
+                                    soundPool.play(RtDsound, 1f, 1f, 0, 0, 1f);
+                                    RtDFlag = true;
+                                }
+                            } else {
+                                values[VIEW_RTD] = "OFF";
+                                AddCloud("RtD", "0");
+                                if (RtDFlag) {
+                                    RtDFlag = false;
+                                }
                             }
-                        }
-                    }
-                    ShowMessage(VIEW_LV, values[VIEW_LV]);
-                    AddCloud("LV", values[VIEW_LV]);
-
-                    ShowMessage(VIEW_HV, values[VIEW_HV]);
-                    AddCloud("HV", values[VIEW_HV]);
-
-                    values[VIEW_MT] = values[VIEW_MT].split("\\.", 0)[0]; //整数にする
-                    ShowMessage(VIEW_MT, values[VIEW_MT]);
-                    AddCloud("MOTOR", values[VIEW_MT]);
-
-                    values[VIEW_INV] = values[VIEW_INV].split("\\.", 0)[0]; //整数にする
-                    ShowMessage(VIEW_INV, values[VIEW_INV]);
-                    AddCloud("INV", values[VIEW_INV]);
-
-                    if (values[VIEW_RTD].contains("1")) {
-                        values[VIEW_RTD] = "ON";
-                        AddCloud("RtD", "100");
-                        if (!(RtDFlag)) {
-                            soundPool.play(RtDsound, 1f, 1f, 0, 0, 1f);
-                            RtDFlag = true;
-                        }
-                    } else {
-                        values[VIEW_RTD] = "OFF";
-                        AddCloud("RtD", "0");
-                        if (RtDFlag) {
-                            RtDFlag = false;
-                        }
-                    }
-                    ShowMessage(VIEW_RTD, values[VIEW_RTD]);
+                            ShowMessage(VIEW_RTD, values[VIEW_RTD]);
 
                     /*
                     String[] ERRORs;
                     ERRORs = values[VIEW_ERR].split("\\.", 0);
                     values[VIEW_ERR] = "FR: " +ERRORs[0]+ " " + "FL: " +ERRORs[1]+ " " + "RR: " +ERRORs[2]+ " " + "RL: " +ERRORs[3];
                     */
-                    ShowMessage(VIEW_ERR, values[VIEW_ERR]);
+                            ShowMessage(VIEW_ERR, values[VIEW_ERR]);
 
-                    AddCloud("CURRENT", values[VIEW_CURR]);
+                            AddCloud("CURRENT", values[VIEW_CURR]);
 
-                    AddCloud("TIME", values[VIEW_TIME]);
+                            AddCloud("TIME", values[VIEW_TIME]);
 
-                    // データストアへの登録
-                    obj.saveInBackground(new DoneCallback() {
-                        @Override
-                        public void done(NCMBException e) {
-                            if (e != null) {
-                                //保存に失敗した場合の処理
-                                e.printStackTrace();
-                            } else {
-                                //保存に成功した場合の処理
+                            // データストアへの登録
+                            obj.saveInBackground(new DoneCallback() {
+                                @Override
+                                public void done(NCMBException e) {
+                                    if (e != null) {
+                                        //保存に失敗した場合の処理
+                                        e.printStackTrace();
+                                    } else {
+                                        //保存に成功した場合の処理
 
-                            }
+                                    }
+                                }
+                            });
+                        } else {
+                            // Log.i(TAG,"value=nodata");
                         }
-                    });
-                } else {
-                    // Log.i(TAG,"value=nodata");
+
+                    }
+                } catch (Exception e) {
+
+                    ShowMessage(VIEW_STATUS, "Bluetooth未接続\nErrorMessage:" + e);
+
+                    try {
+                        mSocket.close();
+                    } catch (Exception ee) {
+                    }
+                    isRunning = false;
+                    connectFlg = false;
+
+                    ShowMessage(VIEW_BLUETOOTH, "BTNO");
+
+                    /**
+                     * Bluetooth自動再接続
+                     */
+                    /*
+                    ScheduledExecutorService reconnect = Executors.newSingleThreadScheduledExecutor();
+                    reconnect.schedule(bluetooth_run, 1000, TimeUnit.MILLISECONDS);
+                    */
+                    mThread = new Thread(bluetooth_run);
+                    // Threadを起動し、Bluetooth接続
+                    isRunning = true;
+                    mThread.start();
                 }
-
             }
-        } catch (Exception e) {
+    };
 
-            ShowMessage(VIEW_STATUS, "Error1:" + e);
-
-            try {
-                mSocket.close();
-            } catch (Exception ee) {
-            }
-            isRunning = false;
-            connectFlg = false;
-
-            ShowMessage(VIEW_BLUETOOTH, "BTNO");
-
-        }
-    }
 
     @Override
     public void onClick(View v) {
         if (v.equals(connectButton)) {
             // 接続されていない場合のみ
             if (!connectFlg) {
+
                 mStatusTextView.setText("try connect");
 
-                mThread = new Thread(this);
+                mThread = new Thread(bluetooth_run);
                 // Threadを起動し、Bluetooth接続
                 isRunning = true;
                 mThread.start();
+
             }
         }
     }
@@ -475,5 +494,6 @@ public class MainActivity extends AppCompatActivity  implements Runnable, View.O
             }
         }
     };
+
 }
 
