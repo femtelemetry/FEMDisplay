@@ -27,20 +27,20 @@
 
     <TextView
         android:id="@+id/statusValue"
-        android:layout_width="355dp"
-        android:layout_height="95dp"
+        android:layout_width="360dp"
+        android:layout_height="50dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginTop="24dp"
         android:layout_marginBottom="24dp"
         android:text="statusValue"
         android:textColor="@android:color/black"
         android:textSize="15sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/RTDValue"
-        app:layout_constraintHorizontal_bias="0.1"
+        app:layout_constraintHorizontal_bias="0.127"
         app:layout_constraintStart_toEndOf="@+id/connectButton"
-        app:layout_constraintTop_toBottomOf="@+id/RTDString" />
+        app:layout_constraintTop_toBottomOf="@+id/RTDString"
+        app:layout_constraintVertical_bias="0.0" />
 
     <Button
         android:id="@+id/connectButton"
@@ -110,16 +110,18 @@
 
     <TextView
         android:id="@+id/bluetoothValue"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="56dp"
-        android:layout_marginRight="56dp"
-        android:text="BTNO"
-        android:textSize="30sp"
-        android:visibility="invisible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_width="360dp"
+        android:layout_height="50dp"
+        android:text="BluetoothStatus"
+        android:textColor="@android:color/black"
+        android:textSize="15sp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/statusValue"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/statusValue"
+        app:layout_constraintTop_toBottomOf="@+id/statusValue"
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/MTString"

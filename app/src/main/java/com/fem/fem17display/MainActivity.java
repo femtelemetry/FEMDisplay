@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
     private TextView mBluetooth;
 
     /**
-     * Bluetoothから受信した値.
+     * Bluetoothから受信した生のデータ.
      */
     private TextView mInputTextView;
 
@@ -272,7 +272,7 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
         public void run() {
                 InputStream mmInStream = null;
 
-                ShowMessage(VIEW_STATUS, "connecting...");
+                ShowMessage(VIEW_STATUS, "Bluetooth Connecting...");
 
                 // 取得したデバイス名を使ってBluetoothでSocket接続
                 try {
@@ -282,30 +282,30 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
                     mmInStream = mSocket.getInputStream();
                     mmOutputStream = mSocket.getOutputStream();
 
-                    ShowMessage(VIEW_BLUETOOTH, "BTOK");
+                    ShowMessage(VIEW_BLUETOOTH, "Bluetooth Connected");
+                    ShowMessage(VIEW_STATUS, " ");
 
                     // InputStreamのバッファを格納
                     byte[] buffer = new byte[1024];
 
                     // 取得したバッファのサイズを格納
                     int bytes;
+                    // InputStreamの読み込み
+                    bytes = mmInStream.read(buffer);
+                    Log.i(TAG, "bytes=" + bytes);
 
-                    ShowMessage(VIEW_STATUS, "connected.");
+                    //ShowMessage(VIEW_STATUS, "connected.");
 
                     connectFlg = true;
 
                     while (isRunning) {
 
-                        // InputStreamの読み込み
-                        bytes = mmInStream.read(buffer);
-                        Log.i(TAG, "bytes=" + bytes);
-                        // String型に変換
                         String readMsg = new String(buffer, 0, bytes);
-
-                        ShowMessage(VIEW_INPUT, readMsg.trim());
 
                         // 情報が欠損なしで届いていれば解析　届く情報は F/(LV)/(HV)/(MT)/(INV)/(RTD)/(ERROR1),~,(ERROR4)/(CURR)/(TIME)/L
                         if (readMsg.trim().startsWith("F") && readMsg.trim().endsWith("L")) {
+                            ShowMessage(VIEW_INPUT, readMsg.trim());
+
                             obj = new NCMBObject("Voltage");
 
                             Log.i(TAG, "value=" + readMsg.trim());
@@ -353,11 +353,11 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
                             }
                             ShowMessage(VIEW_RTD, values[VIEW_RTD]);
 
-                    /*
-                    String[] ERRORs;
-                    ERRORs = values[VIEW_ERR].split("\\.", 0);
-                    values[VIEW_ERR] = "FR: " +ERRORs[0]+ " " + "FL: " +ERRORs[1]+ " " + "RR: " +ERRORs[2]+ " " + "RL: " +ERRORs[3];
-                    */
+                            /*
+                            String[] ERRORs;
+                            ERRORs = values[VIEW_ERR].split("\\.", 0);
+                            values[VIEW_ERR] = "FR: " +ERRORs[0]+ " " + "FL: " +ERRORs[1]+ " " + "RR: " +ERRORs[2]+ " " + "RL: " +ERRORs[3];
+                            */
                             ShowMessage(VIEW_ERR, values[VIEW_ERR]);
 
                             AddCloud("CURRENT", values[VIEW_CURR]);
@@ -378,13 +378,12 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
                                 }
                             });
                         } else {
-                            // Log.i(TAG,"value=nodata");
+                            //正式なデータが届いていない時の処理
+                            ShowMessage(VIEW_STATUS, "受信データに問題があります");
+                            AddCloud("ERROR", "欠損データ受信");
                         }
-
                     }
                 } catch (Exception e) {
-
-                    ShowMessage(VIEW_STATUS, "Bluetooth未接続\nErrorMessage:" + e);
 
                     try {
                         mSocket.close();
@@ -393,7 +392,7 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
                     isRunning = false;
                     connectFlg = false;
 
-                    ShowMessage(VIEW_BLUETOOTH, "BTNO");
+                    ShowMessage(VIEW_BLUETOOTH, "Bluetooth NoConnect : " + e);
 
                     /**
                      * Bluetooth自動再接続
@@ -467,10 +466,10 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
             }
             else if(action == VIEW_BLUETOOTH){
                 mBluetooth.setText(msgStr);
-                if(msgStr.contains("BTOK")){
+                if(msgStr.contains("Connected")){
                     Bluetooth_Image.setImageResource(R.drawable.bluetooth);
                 }
-                else if(msgStr.contains("BTNO")){
+                else if(msgStr.contains("NoConnect")){
                     Bluetooth_Image.setImageResource(R.drawable.bluetooth_no);
                 }
             }
