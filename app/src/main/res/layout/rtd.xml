@@ -7,6 +7,31 @@
     tools:context=".MainActivity">
 
     <TextView
+        android:id="@+id/BTTstring"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="48dp"
+        android:layout_marginLeft="48dp"
+        android:layout_marginTop="40dp"
+        android:background="@android:drawable/alert_light_frame"
+        android:text="BTT"
+        android:textColor="@android:color/black"
+        android:textSize="30sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/HVValue" />
+
+    <TextView
+        android:id="@+id/bttValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@android:drawable/alert_light_frame"
+        android:text="------"
+        android:textColor="@android:color/black"
+        android:textSize="70sp"
+        app:layout_constraintStart_toStartOf="@+id/BTTstring"
+        app:layout_constraintTop_toBottomOf="@+id/BTTstring" />
+
+    <TextView
         android:id="@+id/inputValue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -84,7 +109,8 @@
         android:textColor="@android:color/black"
         android:textSize="30sp"
         app:layout_constraintStart_toEndOf="@+id/LVstring"
-        app:layout_constraintTop_toTopOf="@+id/LVstring" />
+        app:layout_constraintTop_toTopOf="@+id/LVstring"
+        tools:visibility="gone" />
 
     <TextView
         android:id="@+id/LVValue"
@@ -110,6 +136,7 @@
         android:text="------"
         android:textColor="@android:color/black"
         android:textSize="70sp"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="@+id/HVstring"
         app:layout_constraintTop_toBottomOf="@+id/HVstring" />
 
@@ -128,21 +155,21 @@
         android:id="@+id/MTString"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="104dp"
-        android:layout_marginLeft="104dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginLeft="32dp"
         android:background="@android:drawable/alert_dark_frame"
         android:text="MOTOR"
         android:textColor="@android:color/background_light"
         android:textSize="30sp"
-        app:layout_constraintStart_toEndOf="@+id/HVstring"
-        app:layout_constraintTop_toTopOf="@+id/HVstring" />
+        app:layout_constraintStart_toEndOf="@+id/BTTstring"
+        app:layout_constraintTop_toTopOf="@+id/BTTstring" />
 
     <TextView
         android:id="@+id/MTValue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
+        android:layout_marginStart="52dp"
+        android:layout_marginLeft="52dp"
         android:background="@android:drawable/alert_dark_frame"
         android:text="------"
         android:textColor="@android:color/background_light"
@@ -154,8 +181,8 @@
         android:id="@+id/INVString"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="60dp"
-        android:layout_marginLeft="60dp"
+        android:layout_marginStart="64dp"
+        android:layout_marginLeft="64dp"
         android:background="@android:drawable/alert_light_frame"
         android:text="INV"
         android:textColor="@android:color/black"
@@ -167,8 +194,8 @@
         android:id="@+id/INVValue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
+        android:layout_marginStart="44dp"
+        android:layout_marginLeft="44dp"
         android:background="@android:drawable/alert_light_frame"
         android:text="------"
         android:textColor="@android:color/black"

@@ -7,6 +7,18 @@
     tools:context=".MainActivity">
 
     <TextView
+        android:id="@+id/bttValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@android:drawable/alert_light_frame"
+        android:text="------"
+        android:textColor="@android:color/black"
+        android:textSize="70sp"
+        android:visibility="gone"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="411dp" />
+
+    <TextView
         android:id="@+id/inputValue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

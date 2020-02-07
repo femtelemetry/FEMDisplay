@@ -7,6 +7,31 @@
     tools:context=".MainActivity">
 
     <TextView
+        android:id="@+id/bttValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@android:drawable/alert_light_frame"
+        android:text="------"
+        android:textColor="@android:color/black"
+        android:textSize="70sp"
+        app:layout_constraintStart_toStartOf="@+id/BTTstring"
+        app:layout_constraintTop_toBottomOf="@+id/BTTstring" />
+
+    <TextView
+        android:id="@+id/BTTstring"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="48dp"
+        android:layout_marginLeft="48dp"
+        android:layout_marginTop="28dp"
+        android:background="@android:drawable/alert_light_frame"
+        android:text="BTT"
+        android:textColor="@android:color/black"
+        android:textSize="30sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/HVValue" />
+
+    <TextView
         android:id="@+id/inputValue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

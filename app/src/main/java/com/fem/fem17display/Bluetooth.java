@@ -53,32 +53,25 @@ public class Bluetooth extends Service {
     /* Threadの状態を表す */
     boolean isRunning;
 
-    /**
-     * BluetoothのOutputStream.
-     */
+    //BluetoothのOutputStream.
     OutputStream mmOutputStream = null;
 
-    /**
-     * RtD音用
-     */
+    //RtD音用
     SoundPool soundPool;
     int RtDsound;
 
-    /**
-     * NCMB(クラウド)
-     */
+    //NCMB(クラウド)
     NCMBObject obj;
 
-    /**
-     * スリープカウント　ブーリアン
-     */
+    //スリープカウント
     int SleepCount = 0;
 
-    /**
-     * スリープ関連
-     */
+    //スリープ関連
     PowerManager pm;
     PowerManager.WakeLock wakelock;
+    boolean isWakelock = false;
+
+    MainActivity mc = new MainActivity();
 
     @Override
     public void onCreate() {
@@ -142,6 +135,7 @@ public class Bluetooth extends Service {
 
             // 取得したデバイス名を使ってBluetoothでSocket接続
             try {
+
                 /**
                  * Bluetooth接続フェーズ
                  */
@@ -150,7 +144,6 @@ public class Bluetooth extends Service {
                 mmInStream = mSocket.getInputStream();
                 mmOutputStream = mSocket.getOutputStream();
 
-                sendBroadcast(VIEW_BLUETOOTH, "Bluetooth Connected");
                 sendBroadcast(VIEW_STATUS, " ");
 
                 // InputStreamのバッファを格納
@@ -170,6 +163,8 @@ public class Bluetooth extends Service {
                  * 情報受信フェーズ
                  */
                 while (isRunning) {
+
+                    sendBroadcast(VIEW_BLUETOOTH, "bok");
 
                     // InputStreamの読み込み
                     bytes = mmInStream.read(buffer);
@@ -291,11 +286,9 @@ public class Bluetooth extends Service {
                         /**
                          * ERROR解析
                          */
-                            /*
-                            String[] ERRORs;
-                            ERRORs = values[VIEW_ERR].split("\\.", 0);
-                            values[VIEW_ERR] = "FR: " +ERRORs[0]+ " " + "FL: " +ERRORs[1]+ " " + "RR: " +ERRORs[2]+ " " + "RL: " +ERRORs[3];
-                            */
+                        String[] ERRORs;
+                        ERRORs = values[VIEW_ERR - numA].split("x", 0);
+                        ERRFlag = !ERRORs[0].contains("-") || !ERRORs[1].contains("-") || !ERRORs[2].contains("-") || !ERRORs[3].contains("-");
                         sendBroadcast(VIEW_ERR, values[VIEW_ERR - numA]);
 
                         /**
@@ -304,6 +297,7 @@ public class Bluetooth extends Service {
                         AddCloud("CURRENT", values[VIEW_CURR - numA]);
 
                         AddCloud("DELTA", values[VIEW_DELTA - numA]);
+                        //sendBroadcast(VIEW_BTT, 計算値);
 
                         // データストアへの登録
                         obj.saveInBackground(new DoneCallback() {
@@ -340,13 +334,18 @@ public class Bluetooth extends Service {
 
                 SleepCount++;
                 Log.i(TAG, "SleepCount=" + SleepCount);
-                sendBroadcast(VIEW_BLUETOOTH, "Bluetooth NoConnect : " + e);
+                sendBroadcast(VIEW_BLUETOOTH, "bno");
 
                 if(SleepCount > 1 && !isSleep) {
                     isSleep = true;
+                    if(isWakelock) {
+                        isWakelock = false;
+                        wakelock.release();
+                    }
                     //画面消す
                     mDevicePolicyManager.lockNow();
                 }
+
                 /**
                  * Bluetooth自動再接続
                  */
@@ -362,7 +361,13 @@ public class Bluetooth extends Service {
      * レイアウト変更メソッド
      */
     public void LayoutChange(){
-        if(RtDFlag && HVFlag){
+        if(ERRFlag){
+            if(!(NowLayout == ERR)) {
+                //RTDモードに遷移
+                sendBroadcast(LAYOUT_ERR, null);
+            }
+        }
+        else if(RtDFlag && HVFlag){
             if(!(NowLayout == RTD)) {
                 //RTDモードに遷移
                 sendBroadcast(LAYOUT_RTD, null);
@@ -397,12 +402,11 @@ public class Bluetooth extends Service {
                 | PowerManager.ACQUIRE_CAUSES_WAKEUP
                 | PowerManager.ON_AFTER_RELEASE, "myapp:Your App Tag");
         wakelock.acquire();
-        wakelock.release();
+        isWakelock = true;
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.i("TestService", "onStartCommand");
         return START_STICKY;
     }
 

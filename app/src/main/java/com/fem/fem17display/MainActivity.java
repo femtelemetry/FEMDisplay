@@ -40,175 +40,122 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
     /* tag */
     static final String TAG = "BluetoothSample";
 
-    /**
-     * Action(ステータス表示).
-     */
+     //Action(ステータス表示).
     static final int VIEW_STATUS = 0;
 
-    /**
-     * Action(LV).
-     */
+    //Action(LV).
     static final int VIEW_LV = 1;
 
-    /**
-     * Action(HV).
-     */
+    //Action(HV)
     static final int VIEW_HV = 2;
 
-    /**
-     * Action(MOTOR).
-     */
+    //Action(MOTOR)
     static final int VIEW_MT = 3;
 
-    /**
-     * Action(INV).
-     */
+    //Action(INV)
     static final int VIEW_INV = 4;
 
-    /**
-     * Action(RTD).
-     */
+    //Action(RTD)
     static final int VIEW_RTD = 5;
 
-    /**
-     * Action(ERROR).
-     */
+    //Action(ERROR)
     static final int VIEW_ERR = 6;
 
-    /**
-     * Action(CURRENT)
-     */
+    //Action(CURRENT)
     static final int VIEW_CURR = 7;
 
-    /**
-     * Action(CURRENT)
-     */
+    //Action(DELTA)
     static final int VIEW_DELTA = 8;
 
-    /**
-     * Action(LayoutChange:RTD)
-     */
+    //Action(BTT)
+    static final int VIEW_BTT = 9;
+
+    //Action(LayoutChange:RTD)
     static final int LAYOUT_RTD = 51;
 
-    /**
-     * Action(LayoutChange:HVON)
-     */
+    //Action(LayoutChange:HVON)
     static final int LAYOUT_HVON = 52;
 
-    /**
-     * Action(LayoutChange:LVON)
-     */
+    //Action(LayoutChange:LVON)
     static final int LAYOUT_LVON = 53;
 
-    /**
-     * Action(bluetooth).
-     */
+    //Action(LayoutChange:LVON)
+    static final int LAYOUT_ERR = 54;
+
+    //Action(bluetooth)
     static final int VIEW_BLUETOOTH = 100;
 
-    /**
-     * Action(デバック用取得文字列).
-     */
+    //Action(デバック用取得文字列)
     static final int VIEW_INPUT = 101;
 
-    /**
-     * Showmessageする文字列の受け渡し用
-     */
+    //Showmessageする文字列の受け渡し用
     static String msg;
 
-    /**
-     * Bluetooth接続確認用フラグ
-     */
+    //Bluetooth接続確認用フラグ
     static boolean connectFlg = false;
 
-    /**
-     * 接続ボタン.
-     */
+    //接続ボタン
     Button connectButton;
 
-    /**
-     * ステータス.
-     */
+    //ステータス
     TextView mStatusTextView;
 
-    /**
-     * Bluetooth接続ステータス.
-     */
+    //Bluetooth接続ステータス
     TextView mBluetooth;
 
-    /**
-     * Bluetoothから受信した生のデータ.
-     */
+    //Bluetoothから受信した生のデータ
     TextView mInputTextView;
 
-    /**
-     * LV電圧値
-     */
+    //LV電圧値
     TextView mLV;
 
-    /**
-     * HV電圧値
-     */
+    //HV電圧値
     TextView mHV;
 
-    /**
-     * MOTOR温度値
-     */
+    //MOTOR温度値
     TextView mMT;
 
-    /**
-     * INV温度値
-     */
+    //INV温度値
     TextView mINV;
 
-    /**
-     * Ready to Drive表示
-     */
+    //Ready to Drive表示
     TextView mRTD;
 
-    /**
-     * エラー表示
-     */
+    //エラー表示
     TextView mERR;
 
-    /**
-     * 電流表示
-     */
+    //電流表示
     TextView mCURR;
 
-    /**
-     * RtDONOFF
-     */
+    //バッテリ残量表示
+    TextView mBTT;
+
+    //RtD ONOFF
     static boolean RtDFlag = false;
 
-    /**
-     * HVONOFF
-     */
+    //HV ONOFF
     static boolean HVFlag = false;
 
-    /**
-     * bluetooth Image
-     */
+    //ERROR ONOFF
+    static boolean ERRFlag = false;
+
+    //bluetooth Image
     ImageView Bluetooth_Image;
 
-    /**
-     * 現在のレイアウト情報
-     */
+    //現在のレイアウト情報
     static final int LVON = 0;
     static final int HVON = 1;
     static final int RTD = 2;
+    static final int ERR = 3;
     static int NowLayout;
 
-    /**
-     * スリープ関連
-     */
+    //スリープ関連
     static final int ADMIN_INTENT = 1;
     static DevicePolicyManager mDevicePolicyManager;
     static ComponentName mComponentName;
     static boolean isSleep = false;
 
-    /**
-     * クラス間のmessageやり取り用
-     */
+    //クラス間のmessageやり取り用
     private BroadcastReceiver mReceiver = null;
     private IntentFilter mIntentFilter = null;
 
@@ -230,6 +177,7 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
         mINV = (TextView) findViewById(R.id.INVValue);
         mRTD = (TextView) findViewById(R.id.RTDValue);
         mERR = (TextView) findViewById(R.id.ERRORValue);
+        mBTT = (TextView) findViewById(R.id.bttValue);
         Bluetooth_Image = findViewById(R.id.bluetooth);
         connectButton = (Button) findViewById(R.id.connectButton);
         connectButton.setOnClickListener(this);
@@ -302,6 +250,7 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
         mINV = (TextView) findViewById(R.id.INVValue);
         mRTD = (TextView) findViewById(R.id.RTDValue);
         mERR = (TextView) findViewById(R.id.ERRORValue);
+        mBTT = (TextView) findViewById(R.id.bttValue);
         Bluetooth_Image = findViewById(R.id.bluetooth);
         connectButton = (Button) findViewById(R.id.connectButton);
         connectButton.setOnClickListener(this);
@@ -320,6 +269,7 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
 
     public void onRestart() {
         super.onRestart();
+        //画面常にON
         isSleep = false;
     }
 
@@ -345,10 +295,10 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
             }
             else if(action == VIEW_BLUETOOTH){
                 mBluetooth.setText(msgStr);
-                if(msgStr.contains("Connected")){
+                if(msgStr.contains("bok")){
                     Bluetooth_Image.setImageResource(R.drawable.bluetooth);
                 }
-                else if(msgStr.contains("NoConnect")){
+                else if(msgStr.contains("bno")){
                     Bluetooth_Image.setImageResource(R.drawable.bluetooth_no);
                 }
             }
@@ -370,6 +320,9 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
             else if(action == VIEW_ERR){
                 mERR.setText(msgStr);
             }
+            else if(action == VIEW_BTT){
+                mBTT.setText(msgStr);
+            }
             else if(action == LAYOUT_RTD){
                 setContentView(R.layout.rtd);
                 NowLayout = RTD;
@@ -383,6 +336,11 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
             else if(action == LAYOUT_LVON){
                 setContentView(R.layout.lvon);
                 NowLayout = LVON;
+                RefindId();
+            }
+            else if(action == LAYOUT_ERR){
+                setContentView(R.layout.error);
+                NowLayout = ERR;
                 RefindId();
             }
         }
