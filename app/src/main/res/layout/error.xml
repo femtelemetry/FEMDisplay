@@ -7,11 +7,51 @@
     tools:context=".MainActivity">
 
     <TextView
+        android:id="@+id/ERRORValueRR"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="52dp"
+        android:layout_marginLeft="52dp"
+        android:layout_marginTop="152dp"
+        android:text="RR:errormessage"
+        android:textColor="@android:color/black"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="@+id/ERRORString"
+        app:layout_constraintTop_toBottomOf="@+id/ERRORString" />
+
+    <TextView
+        android:id="@+id/ERRORValueRL"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="52dp"
+        android:layout_marginLeft="52dp"
+        android:layout_marginTop="232dp"
+        android:text="RL:errormessage"
+        android:textColor="@android:color/black"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="@+id/ERRORString"
+        app:layout_constraintTop_toBottomOf="@+id/ERRORString" />
+
+    <TextView
+        android:id="@+id/ERRORValueFL"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="56dp"
+        android:layout_marginLeft="56dp"
+        android:layout_marginTop="92dp"
+        android:text="FL:errormessage"
+        android:textColor="@android:color/black"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="@+id/ERRORString"
+        app:layout_constraintTop_toBottomOf="@+id/ERRORString" />
+
+    <TextView
         android:id="@+id/BTTstring"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="420dp"
         android:layout_marginLeft="420dp"
+        android:layout_marginTop="16dp"
         android:background="@android:drawable/alert_light_frame"
         android:text="BTT"
         android:textColor="@android:color/black"
@@ -207,20 +247,22 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
-        android:text="ERROR"
+        android:text="エラー"
         android:textColor="@android:color/black"
         android:textSize="60sp"
         app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="104dp" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/ERRORValue"
+        android:id="@+id/ERRORValueFR"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="errormessage1\nerrormessage2\nerrormessage3"
+        android:layout_marginStart="56dp"
+        android:layout_marginLeft="56dp"
+        android:layout_marginTop="8dp"
+        android:text="FR:errormessage"
         android:textColor="@android:color/black"
-        android:textSize="60sp"
+        android:textSize="20sp"
         app:layout_constraintStart_toStartOf="@+id/ERRORString"
         app:layout_constraintTop_toBottomOf="@+id/ERRORString" />
 

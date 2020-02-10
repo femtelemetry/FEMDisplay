@@ -2,18 +2,11 @@ package com.fem.fem17display;
 
 import android.annotation.SuppressLint;
 import android.app.admin.DevicePolicyManager;
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.media.AudioAttributes;
-import android.media.AudioManager;
-import android.media.SoundPool;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -25,16 +18,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.Set;
-import java.util.UUID;
-
-import com.nifcloud.mbaas.core.NCMB;
-import com.nifcloud.mbaas.core.NCMBException;
-import com.nifcloud.mbaas.core.NCMBObject;
-import com.nifcloud.mbaas.core.DoneCallback;
 
 public class MainActivity extends AppCompatActivity  implements View.OnClickListener {
     /* tag */
@@ -58,8 +41,13 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
     //Action(RTD)
     static final int VIEW_RTD = 5;
 
-    //Action(ERROR)
+    //信号受信時エラーは六番目
     static final int VIEW_ERR = 6;
+    //Action(ERROR)
+    static final int VIEW_ERRFR = 61;
+    static final int VIEW_ERRFL = 62;
+    static final int VIEW_ERRRR = 63;
+    static final int VIEW_ERRRL = 64;
 
     //Action(CURRENT)
     static final int VIEW_CURR = 7;
@@ -122,7 +110,10 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
     TextView mRTD;
 
     //エラー表示
-    TextView mERR;
+    TextView mERRFR;
+    TextView mERRFL;
+    TextView mERRRR;
+    TextView mERRRL;
 
     //電流表示
     TextView mCURR;
@@ -176,7 +167,10 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
         mMT = (TextView) findViewById(R.id.MTValue);
         mINV = (TextView) findViewById(R.id.INVValue);
         mRTD = (TextView) findViewById(R.id.RTDValue);
-        mERR = (TextView) findViewById(R.id.ERRORValue);
+        mERRFR = (TextView) findViewById(R.id.ERRORValueFR);
+        mERRFL = (TextView) findViewById(R.id.ERRORValueFL);
+        mERRRR = (TextView) findViewById(R.id.ERRORValueRR);
+        mERRRL = (TextView) findViewById(R.id.ERRORValueRL);
         mBTT = (TextView) findViewById(R.id.bttValue);
         Bluetooth_Image = findViewById(R.id.bluetooth);
         connectButton = (Button) findViewById(R.id.connectButton);
@@ -249,7 +243,10 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
         mMT = (TextView) findViewById(R.id.MTValue);
         mINV = (TextView) findViewById(R.id.INVValue);
         mRTD = (TextView) findViewById(R.id.RTDValue);
-        mERR = (TextView) findViewById(R.id.ERRORValue);
+        mERRFR = (TextView) findViewById(R.id.ERRORValueFR);
+        mERRFL = (TextView) findViewById(R.id.ERRORValueFL);
+        mERRRR = (TextView) findViewById(R.id.ERRORValueRR);
+        mERRRL = (TextView) findViewById(R.id.ERRORValueRL);
         mBTT = (TextView) findViewById(R.id.bttValue);
         Bluetooth_Image = findViewById(R.id.bluetooth);
         connectButton = (Button) findViewById(R.id.connectButton);
@@ -317,8 +314,17 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
             else if(action == VIEW_RTD){
                 mRTD.setText(msgStr);
             }
-            else if(action == VIEW_ERR){
-                mERR.setText(msgStr);
+            else if(action == VIEW_ERRFR){
+                mERRFR.setText(msgStr);
+            }
+            else if(action == VIEW_ERRFL){
+                mERRFL.setText(msgStr);
+            }
+            else if(action == VIEW_ERRRR){
+                mERRRR.setText(msgStr);
+            }
+            else if(action == VIEW_ERRRL){
+                mERRRL.setText(msgStr);
             }
             else if(action == VIEW_BTT){
                 mBTT.setText(msgStr);

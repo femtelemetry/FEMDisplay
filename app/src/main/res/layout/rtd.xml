@@ -7,6 +7,48 @@
     tools:context=".MainActivity">
 
     <TextView
+        android:id="@+id/ERRORValueRR"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="52dp"
+        android:layout_marginLeft="52dp"
+        android:layout_marginTop="152dp"
+        android:text="RR:errormessage"
+        android:textColor="@android:color/black"
+        android:textSize="20sp"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="@+id/ERRORString"
+        app:layout_constraintTop_toBottomOf="@+id/ERRORString" />
+
+    <TextView
+        android:id="@+id/ERRORValueRL"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="52dp"
+        android:layout_marginLeft="52dp"
+        android:layout_marginTop="232dp"
+        android:text="RL:errormessage"
+        android:textColor="@android:color/black"
+        android:textSize="20sp"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="@+id/ERRORString"
+        app:layout_constraintTop_toBottomOf="@+id/ERRORString" />
+
+    <TextView
+        android:id="@+id/ERRORValueFL"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="56dp"
+        android:layout_marginLeft="56dp"
+        android:layout_marginTop="92dp"
+        android:text="FL:errormessage"
+        android:textColor="@android:color/black"
+        android:textSize="20sp"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="@+id/ERRORString"
+        app:layout_constraintTop_toBottomOf="@+id/ERRORString" />
+
+    <TextView
         android:id="@+id/BTTstring"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -108,9 +150,9 @@
         android:text="HV"
         android:textColor="@android:color/black"
         android:textSize="30sp"
+        android:visibility="gone"
         app:layout_constraintStart_toEndOf="@+id/LVstring"
-        app:layout_constraintTop_toTopOf="@+id/LVstring"
-        tools:visibility="gone" />
+        app:layout_constraintTop_toTopOf="@+id/LVstring" />
 
     <TextView
         android:id="@+id/LVValue"
@@ -218,7 +260,7 @@
         app:layout_constraintTop_toBottomOf="@+id/LVValue" />
 
     <TextView
-        android:id="@+id/ERRORValue"
+        android:id="@+id/ERRORValueFR"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -254,6 +296,7 @@
         android:text="RTD"
         android:textColor="@android:color/black"
         android:textSize="70sp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/RTDString" />
 

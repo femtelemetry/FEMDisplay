@@ -289,7 +289,10 @@ public class Bluetooth extends Service {
                         String[] ERRORs;
                         ERRORs = values[VIEW_ERR - numA].split("x", 0);
                         ERRFlag = !ERRORs[0].contains("-") || !ERRORs[1].contains("-") || !ERRORs[2].contains("-") || !ERRORs[3].contains("-");
-                        sendBroadcast(VIEW_ERR, values[VIEW_ERR - numA]);
+                        sendBroadcast(VIEW_ERRFR, ERRORs[0]);
+                        sendBroadcast(VIEW_ERRFL, ERRORs[1]);
+                        sendBroadcast(VIEW_ERRRR, ERRORs[2]);
+                        sendBroadcast(VIEW_ERRRL, ERRORs[3]);
 
                         /**
                          * 電流値解析
@@ -336,6 +339,7 @@ public class Bluetooth extends Service {
                 Log.i(TAG, "SleepCount=" + SleepCount);
                 sendBroadcast(VIEW_BLUETOOTH, "bno");
 
+                //Bluetooth未接続ならスリープ状態へ
                 if(SleepCount > 1 && !isSleep) {
                     isSleep = true;
                     if(isWakelock) {
