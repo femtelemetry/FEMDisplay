@@ -144,7 +144,6 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
-        android:fontFamily="sans-serif"
         android:text="------"
         android:textSize="70sp"
         app:layout_constraintStart_toStartOf="@+id/LVstring"
