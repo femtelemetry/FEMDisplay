@@ -14,7 +14,6 @@
         android:layout_marginLeft="52dp"
         android:layout_marginTop="152dp"
         android:text="RR:errormessage"
-        android:textColor="@android:color/black"
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="@+id/ERRORString"
         app:layout_constraintTop_toBottomOf="@+id/ERRORString" />
@@ -27,7 +26,6 @@
         android:layout_marginLeft="52dp"
         android:layout_marginTop="232dp"
         android:text="RL:errormessage"
-        android:textColor="@android:color/black"
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="@+id/ERRORString"
         app:layout_constraintTop_toBottomOf="@+id/ERRORString" />
@@ -40,7 +38,6 @@
         android:layout_marginLeft="56dp"
         android:layout_marginTop="92dp"
         android:text="FL:errormessage"
-        android:textColor="@android:color/black"
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="@+id/ERRORString"
         app:layout_constraintTop_toBottomOf="@+id/ERRORString" />
@@ -52,9 +49,7 @@
         android:layout_marginStart="420dp"
         android:layout_marginLeft="420dp"
         android:layout_marginTop="16dp"
-        android:background="@android:drawable/alert_light_frame"
         android:text="BTT"
-        android:textColor="@android:color/black"
         android:textSize="30sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/HVValue" />
@@ -63,9 +58,7 @@
         android:id="@+id/bttValue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@android:drawable/alert_light_frame"
         android:text="------"
-        android:textColor="@android:color/black"
         android:textSize="70sp"
         app:layout_constraintStart_toStartOf="@+id/BTTstring"
         app:layout_constraintTop_toBottomOf="@+id/BTTstring" />
@@ -143,9 +136,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="216dp"
         android:layout_marginLeft="216dp"
-        android:background="@android:drawable/alert_light_frame"
         android:text="HV"
-        android:textColor="@android:color/black"
         android:textSize="30sp"
         app:layout_constraintStart_toEndOf="@+id/LVstring"
         app:layout_constraintTop_toTopOf="@+id/LVstring" />
@@ -170,9 +161,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
         android:layout_marginLeft="32dp"
-        android:background="@android:drawable/alert_light_frame"
         android:text="------"
-        android:textColor="@android:color/black"
         android:textSize="70sp"
         app:layout_constraintStart_toStartOf="@+id/HVstring"
         app:layout_constraintTop_toBottomOf="@+id/HVstring" />
@@ -195,9 +184,7 @@
         android:layout_marginStart="100dp"
         android:layout_marginLeft="100dp"
         android:layout_marginTop="8dp"
-        android:background="@android:drawable/alert_dark_frame"
         android:text="MOTOR"
-        android:textColor="@android:color/background_light"
         android:textSize="30sp"
         app:layout_constraintStart_toEndOf="@+id/HVstring"
         app:layout_constraintTop_toTopOf="@+id/HVstring" />
@@ -208,9 +195,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
         android:layout_marginLeft="32dp"
-        android:background="@android:drawable/alert_dark_frame"
         android:text="------"
-        android:textColor="@android:color/background_light"
         android:textSize="70sp"
         app:layout_constraintStart_toStartOf="@+id/MTString"
         app:layout_constraintTop_toBottomOf="@+id/MTString" />
@@ -221,9 +206,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
         android:layout_marginLeft="32dp"
-        android:background="@android:drawable/alert_light_frame"
         android:text="INV"
-        android:textColor="@android:color/black"
         android:textSize="30sp"
         app:layout_constraintStart_toEndOf="@+id/MTString"
         app:layout_constraintTop_toTopOf="@+id/MTString" />
@@ -234,9 +217,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="48dp"
         android:layout_marginLeft="48dp"
-        android:background="@android:drawable/alert_light_frame"
         android:text="------"
-        android:textColor="@android:color/black"
         android:textSize="70sp"
         app:layout_constraintStart_toStartOf="@+id/INVString"
         app:layout_constraintTop_toBottomOf="@+id/INVString" />
@@ -248,7 +229,6 @@
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
         android:text="エラー"
-        android:textColor="@android:color/black"
         android:textSize="60sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -261,7 +241,6 @@
         android:layout_marginLeft="56dp"
         android:layout_marginTop="8dp"
         android:text="FR:errormessage"
-        android:textColor="@android:color/black"
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="@+id/ERRORString"
         app:layout_constraintTop_toBottomOf="@+id/ERRORString" />
@@ -286,9 +265,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:background="@android:drawable/alert_light_frame"
         android:text="RTD"
-        android:textColor="@android:color/black"
         android:textSize="70sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/RTDString" />

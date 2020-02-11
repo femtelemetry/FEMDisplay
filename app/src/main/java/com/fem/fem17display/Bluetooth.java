@@ -1,12 +1,9 @@
 package com.fem.fem17display;
 
 import android.app.Service;
-import android.app.admin.DevicePolicyManager;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.media.AudioAttributes;
 import android.media.AudioManager;
@@ -15,16 +12,18 @@ import android.os.Build;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.util.Log;
-import android.view.WindowManager;
 
 import com.nifcloud.mbaas.core.DoneCallback;
+import com.nifcloud.mbaas.core.FindCallback;
 import com.nifcloud.mbaas.core.NCMB;
 import com.nifcloud.mbaas.core.NCMBException;
 import com.nifcloud.mbaas.core.NCMBObject;
+import com.nifcloud.mbaas.core.NCMBQuery;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -61,7 +60,10 @@ public class Bluetooth extends Service {
     int RtDsound;
 
     //NCMB(クラウド)
-    NCMBObject obj;
+    NCMBObject objV;
+    NCMBQuery<NCMBObject> queryC;
+    NCMBObject objC;
+    NCMBQuery<NCMBObject> queryM;
 
     //スリープカウント
     int SleepCount = 0;
@@ -70,6 +72,12 @@ public class Bluetooth extends Service {
     PowerManager pm;
     PowerManager.WakeLock wakelock;
     boolean isWakelock = false;
+
+    //電流積算
+    float SumCURR; //満充電時から使った電流の合計
+    float MaxCURR; //マシンが使う全合計電流値
+    float BTT; //計算したバッテリ残量値
+    String Battery;
 
     MainActivity mc = new MainActivity();
 
@@ -120,7 +128,7 @@ public class Bluetooth extends Service {
     private void AddCloud(String INFO, String MSG) {
         // オブジェクトの値を設定
         try {
-            obj.put(INFO, MSG);
+            objV.put(INFO, MSG);
         } catch (NCMBException e) {
             e.printStackTrace();
         }
@@ -179,7 +187,7 @@ public class Bluetooth extends Service {
                     if (readMsg.trim().startsWith("A") && readMsg.trim().endsWith("A")) {
                         sendBroadcast(VIEW_INPUT, readMsg.trim());
 
-                        obj = new NCMBObject("Voltage");
+                        objV = new NCMBObject("Voltage");
                         sendBroadcast(VIEW_STATUS, " ");
                         String[] values;
                         values = readMsg.trim().split("/", 0);
@@ -234,7 +242,7 @@ public class Bluetooth extends Service {
                         AddCloud("INV", values[VIEW_INV]);
 
                         // データストアへの登録
-                        obj.saveInBackground(new DoneCallback() {
+                        objV.saveInBackground(new DoneCallback() {
                             @Override
                             public void done(NCMBException e) {
                                 if (e != null) {
@@ -252,7 +260,7 @@ public class Bluetooth extends Service {
 
                         sendBroadcast(VIEW_INPUT, readMsg.trim());
 
-                        obj = new NCMBObject("Voltage");
+                        objV = new NCMBObject("Voltage");
                         sendBroadcast(VIEW_STATUS, " ");
 
                         String[] values;
@@ -297,13 +305,63 @@ public class Bluetooth extends Service {
                         /**
                          * 電流値解析
                          */
-                        AddCloud("CURRENT", values[VIEW_CURR - numA]);
+                        if(!values[VIEW_CURR - numA].contains("-")) {
+                            queryC = new NCMBQuery<>("Current");
+                            objC = new NCMBObject("Current");
+                            queryM = new NCMBQuery<>("MAX");
 
-                        AddCloud("DELTA", values[VIEW_DELTA - numA]);
-                        //sendBroadcast(VIEW_BTT, 計算値);
+                            AddCloud("CURRENT", values[VIEW_CURR - numA]);
+
+                            //AddCloud("DELTA", values[VIEW_DELTA - numA]);
+                            //マシンのMAX電流値を取得
+                            queryM.addOrderByDescending("createDate");
+                            queryM.setLimit(1);
+                            try {
+                                // データストアでの検索を行う
+                                List<NCMBObject> objects = queryM.find();
+                                MaxCURR = Float.valueOf(objects.get(0).getString("MAX"));
+                            } catch (NCMBException e) {
+                                // Exception発生時の処理
+                            }
+                            //現在の電流積算値を取得
+                            queryC.addOrderByDescending("createDate");
+                            queryC.setLimit(1);
+                            try {
+                                // データストアでの検索を行う
+                                List<NCMBObject> objects = queryC.find();
+                                SumCURR = Float.valueOf(objects.get(0).getString("Sum"));
+                            } catch (NCMBException e) {
+                                // Exception発生時の処理
+                            }
+                            SumCURR = SumCURR + Float.valueOf(values[VIEW_CURR - numA]);
+                            //電流積算値を更新
+                            try {
+                                objC.put("Sum", SumCURR);
+                            } catch (NCMBException e) {
+                                e.printStackTrace();
+                            }
+                            // データストアへの登録
+                            objC.saveInBackground(new DoneCallback() {
+                                @Override
+                                public void done(NCMBException e) {
+                                    if (e != null) {
+                                        //保存に失敗した場合の処理
+                                        e.printStackTrace();
+                                    } else {
+                                        //保存に成功した場合の処理
+
+                                    }
+                                }
+                            });
+                            //バッテリ残量値を計算
+                            BTT = (1 - SumCURR / MaxCURR) * 100;
+                            Battery = String.valueOf((int) BTT);
+                            sendBroadcast(VIEW_BTT, Battery);
+                            AddCloud("BTT", Battery);
+                        }
 
                         // データストアへの登録
-                        obj.saveInBackground(new DoneCallback() {
+                        objV.saveInBackground(new DoneCallback() {
                             @Override
                             public void done(NCMBException e) {
                                 if (e != null) {
