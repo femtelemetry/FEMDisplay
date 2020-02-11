@@ -183,7 +183,7 @@ public class Bluetooth extends Service {
                     /**
                      * 情報解析フェーズ
                      */
-                    // 情報が欠損なしで届いていれば解析　届く情報は A/(LV)/(HV)/(MT1),~,(MT4)/(INV)/A その次にB/(RTD1),~(RTD4)/(ERROR1),~,(ERROR4)/(CURR)/(DELTA)/B
+                    // 情報が欠損なしで届いていれば解析　届く情報は A/(LV)/(HV)/(MT1),~,(MT4)/(INV)/A その次にB/(RTD1),~(RTD4)/(ERROR1),~,(ERROR4)/B 最後にC/(CURR)/C
                     if (readMsg.trim().startsWith("A") && readMsg.trim().endsWith("A")) {
                         sendBroadcast(VIEW_INPUT, readMsg.trim());
 
@@ -302,17 +302,41 @@ public class Bluetooth extends Service {
                         sendBroadcast(VIEW_ERRRR, ERRORs[2]);
                         sendBroadcast(VIEW_ERRRL, ERRORs[3]);
 
+                        // データストアへの登録
+                        objV.saveInBackground(new DoneCallback() {
+                            @Override
+                            public void done(NCMBException e) {
+                                if (e != null) {
+                                    //保存に失敗した場合の処理
+                                    e.printStackTrace();
+                                } else {
+                                    //保存に成功した場合の処理
+
+                                }
+                            }
+                        });
+
+                    }
+                    else if (readMsg.trim().startsWith("C") && readMsg.trim().endsWith("C")){
+
+                        sendBroadcast(VIEW_INPUT, readMsg.trim());
+
+                        objV = new NCMBObject("Voltage");
+                        sendBroadcast(VIEW_STATUS, " ");
+
+                        String[] values;
+
+                        values = readMsg.trim().split("/", 0);
                         /**
                          * 電流値解析
                          */
-                        if(!values[VIEW_CURR - numA].contains("-")) {
+                        if(!values[1].contains("-")) {
                             queryC = new NCMBQuery<>("Current");
                             objC = new NCMBObject("Current");
                             queryM = new NCMBQuery<>("MAX");
 
-                            AddCloud("CURRENT", values[VIEW_CURR - numA]);
+                            AddCloud("CURRENT", values[1]);
 
-                            //AddCloud("DELTA", values[VIEW_DELTA - numA]);
                             //マシンのMAX電流値を取得
                             queryM.addOrderByDescending("createDate");
                             queryM.setLimit(1);
@@ -333,7 +357,7 @@ public class Bluetooth extends Service {
                             } catch (NCMBException e) {
                                 // Exception発生時の処理
                             }
-                            SumCURR = SumCURR + Float.valueOf(values[VIEW_CURR - numA]);
+                            SumCURR = SumCURR + Float.valueOf(values[1]);
                             //電流積算値を更新
                             try {
                                 objC.put("Sum", SumCURR);
@@ -358,22 +382,21 @@ public class Bluetooth extends Service {
                             Battery = String.valueOf((int) BTT);
                             sendBroadcast(VIEW_BTT, Battery);
                             AddCloud("BTT", Battery);
-                        }
 
-                        // データストアへの登録
-                        objV.saveInBackground(new DoneCallback() {
-                            @Override
-                            public void done(NCMBException e) {
-                                if (e != null) {
-                                    //保存に失敗した場合の処理
-                                    e.printStackTrace();
-                                } else {
-                                    //保存に成功した場合の処理
+                            // データストアへの登録
+                            objV.saveInBackground(new DoneCallback() {
+                                @Override
+                                public void done(NCMBException e) {
+                                    if (e != null) {
+                                        //保存に失敗した場合の処理
+                                        e.printStackTrace();
+                                    } else {
+                                        //保存に成功した場合の処理
 
+                                    }
                                 }
-                            }
-                        });
-
+                            });
+                        }
                     }
                     else{
                         //正式なデータが届いていない時の処理
