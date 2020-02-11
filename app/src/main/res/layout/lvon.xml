@@ -119,6 +119,7 @@
         android:layout_marginLeft="40dp"
         android:layout_marginTop="8dp"
         android:text="LV"
+        android:textColor="#000000"
         android:textSize="30sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/inputValue" />
