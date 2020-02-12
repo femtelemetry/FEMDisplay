@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/pattern"
     tools:context=".MainActivity">
 
     <TextView
@@ -101,13 +100,13 @@
 
     <Button
         android:id="@+id/connectButton"
-        android:layout_width="150dp"
-        android:layout_height="70dp"
-        android:layout_marginStart="28dp"
-        android:layout_marginLeft="28dp"
-        android:layout_marginTop="268dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="320dp"
+        android:layout_marginBottom="8dp"
         android:text="START"
-        android:textSize="30sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -116,15 +115,14 @@
         android:id="@+id/LVstring"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/acme"
+        android:layout_marginStart="40dp"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="8dp"
         android:text="LV"
         android:textColor="#000000"
-        android:textSize="50sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/LVValue"
-        app:layout_constraintStart_toStartOf="@+id/LVValue"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.084" />
+        android:textSize="30sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/inputValue" />
 
     <TextView
         android:id="@+id/HVstring"
@@ -142,21 +140,14 @@
 
     <TextView
         android:id="@+id/LVValue"
-        android:layout_width="200dp"
-        android:layout_height="170dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginBottom="23dp"
-        android:background="@android:drawable/picture_frame"
-        android:fontFamily="@font/acme"
-        android:gravity="center"
-        android:text="-----"
-        android:textColor="#000000"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:text="------"
         android:textSize="70sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/LVstring"
-        app:layout_constraintVertical_bias="0.16000003" />
+        app:layout_constraintStart_toStartOf="@+id/LVstring"
+        app:layout_constraintTop_toBottomOf="@+id/LVstring" />
 
     <TextView
         android:id="@+id/HVValue"
@@ -187,63 +178,45 @@
         android:id="@+id/MTString"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/acme"
+        android:layout_marginStart="104dp"
+        android:layout_marginLeft="104dp"
         android:text="MOTOR"
-        android:textColor="#000000"
-        android:textSize="50sp"
-        app:layout_constraintEnd_toEndOf="@+id/MTValue"
-        app:layout_constraintStart_toStartOf="@+id/MTValue"
-        app:layout_constraintTop_toTopOf="@+id/LVstring" />
+        android:textSize="30sp"
+        app:layout_constraintStart_toEndOf="@+id/HVstring"
+        app:layout_constraintTop_toTopOf="@+id/HVstring" />
 
     <TextView
         android:id="@+id/MTValue"
-        android:layout_width="200dp"
-        android:layout_height="170dp"
-        android:layout_marginBottom="23dp"
-        android:background="@android:drawable/picture_frame"
-        android:fontFamily="@font/acme"
-        android:gravity="center"
-        android:text="-----"
-        android:textColor="#000000"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:text="------"
         android:textSize="70sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.499"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/MTString"
-        app:layout_constraintVertical_bias="0.16000003" />
+        app:layout_constraintStart_toStartOf="@+id/MTString"
+        app:layout_constraintTop_toBottomOf="@+id/MTString" />
 
     <TextView
         android:id="@+id/INVString"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/acme"
+        android:layout_marginStart="60dp"
+        android:layout_marginLeft="60dp"
         android:text="INV"
-        android:textColor="#000000"
-        android:textSize="50sp"
-        app:layout_constraintEnd_toEndOf="@+id/INVValue"
-        app:layout_constraintStart_toStartOf="@+id/INVValue"
+        android:textSize="30sp"
+        app:layout_constraintStart_toEndOf="@+id/MTString"
         app:layout_constraintTop_toTopOf="@+id/MTString" />
 
     <TextView
         android:id="@+id/INVValue"
-        android:layout_width="200dp"
-        android:layout_height="170dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginBottom="23dp"
-        android:background="@android:drawable/picture_frame"
-        android:fontFamily="@font/acme"
-        android:gravity="center"
-        android:text="-----"
-        android:textColor="#000000"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:text="------"
         android:textSize="70sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/INVString"
-        app:layout_constraintVertical_bias="0.16000003" />
+        app:layout_constraintStart_toStartOf="@+id/INVString"
+        app:layout_constraintTop_toBottomOf="@+id/INVString" />
 
     <TextView
         android:id="@+id/ERRORString"
@@ -289,19 +262,18 @@
 
     <TextView
         android:id="@+id/RTDValue"
-        android:layout_width="131dp"
-        android:layout_height="100dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:layout_marginEnd="384dp"
-        android:layout_marginRight="384dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
         android:text="RTD"
-        android:textColor="#000000"
         android:textSize="70sp"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/RTDString"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintStart_toStartOf="@+id/INVValue"
+        app:layout_constraintTop_toTopOf="@+id/RTDString" />
 
     <ImageView
         android:id="@+id/bluetooth"
@@ -313,47 +285,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/bluetooth_no" />
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginBottom="8dp"
-        android:fontFamily="@font/acme"
-        android:text="V"
-        android:textColor="#000000"
-        android:textSize="40sp"
-        app:layout_constraintBottom_toBottomOf="@+id/LVValue"
-        app:layout_constraintEnd_toEndOf="@+id/LVValue" />
-
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginBottom="8dp"
-        android:fontFamily="@font/acme"
-        android:text="℃"
-        android:textColor="#000000"
-        android:textSize="40sp"
-        app:layout_constraintBottom_toBottomOf="@+id/MTValue"
-        app:layout_constraintEnd_toEndOf="@+id/MTValue" />
-
-    <TextView
-        android:id="@+id/textView3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginBottom="8dp"
-        android:fontFamily="@font/acme"
-        android:text="℃"
-        android:textColor="#000000"
-        android:textSize="40sp"
-        app:layout_constraintBottom_toBottomOf="@+id/INVValue"
-        app:layout_constraintEnd_toEndOf="@+id/INVValue" />
 
 </android.support.constraint.ConstraintLayout>
