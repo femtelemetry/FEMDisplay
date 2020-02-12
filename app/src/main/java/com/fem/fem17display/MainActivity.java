@@ -176,7 +176,7 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
         connectButton = (Button) findViewById(R.id.connectButton);
         connectButton.setOnClickListener(this);
 
-        //スリープ関連
+        ///スリープ関連
         mDevicePolicyManager = (DevicePolicyManager)getSystemService(
                 Context.DEVICE_POLICY_SERVICE);
         mComponentName = new ComponentName(this, Admin.class);
