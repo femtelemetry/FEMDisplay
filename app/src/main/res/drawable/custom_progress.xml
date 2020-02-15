@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- 背景 -->
+    <item android:id="@android:id/background">
+        <color android:color="#dcdcdc" />
+    </item>
+
+    <!-- android:secondaryProgress用のDrawable -->
+    <item android:id="@android:id/secondaryProgress">
+        <clip>
+            <color android:color="#aa8000" />
+        </clip>
+    </item>
+
+    <!-- android:progress用のDrawable -->
+    <item android:id="@android:id/progress">
+        <clip>
+            <bitmap android:src='@drawable/battery_gage2'/>
+        </clip>
+    </item>
+
+</layer-list>

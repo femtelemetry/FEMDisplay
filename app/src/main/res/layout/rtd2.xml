@@ -13,7 +13,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:max="100"
-        android:progress="65"
+        android:progress="100"
         android:progressDrawable="@drawable/custom_progress"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -49,15 +49,16 @@
         android:id="@+id/bttValue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="172dp"
-        android:text="------"
+        android:layout_marginBottom="4dp"
+        android:text="100"
         android:textColor="#000000"
-        android:textSize="170sp"
+        android:textSize="300sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.367"
         app:layout_constraintStart_toStartOf="parent"
         app:strokeColor="@android:color/background_light"
-        app:strokeWidth="2dp" />
+        app:strokeWidth="3dp" />
 
     <TextView
         android:id="@+id/ERRORValueFL"
@@ -80,6 +81,7 @@
         android:text="BTT"
         android:textColor="#000000"
         android:textSize="60sp"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/bttValue"
         app:layout_constraintHorizontal_bias="0.251"
@@ -87,7 +89,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.048"
         app:strokeColor="@android:color/background_light"
-        app:strokeWidth="1dp"/>
+        app:strokeWidth="1dp" />
 
     <TextView
         android:id="@+id/inputValue"
@@ -216,6 +218,7 @@
         android:text="MOTOR"
         android:textColor="#000000"
         android:textSize="50sp"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="@+id/MTValue"
         app:layout_constraintHorizontal_bias="0.131"
         app:layout_constraintStart_toStartOf="@+id/MTValue"
@@ -230,6 +233,7 @@
         android:text="------"
         android:textColor="#000000"
         android:textSize="150sp"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.034"
@@ -246,6 +250,7 @@
         android:text="INV"
         android:textColor="#000000"
         android:textSize="50sp"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/INVValue"
         app:layout_constraintHorizontal_bias="0.071"
@@ -262,6 +267,7 @@
         android:text="------"
         android:textColor="#000000"
         android:textSize="150sp"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.576"
         app:layout_constraintStart_toEndOf="@+id/MTValue"
@@ -349,12 +355,12 @@
         android:textSize="80sp"
         app:layout_constraintBottom_toBottomOf="@+id/bttValue"
         app:layout_constraintEnd_toEndOf="@+id/progressBar"
-        app:layout_constraintHorizontal_bias="0.775"
+        app:layout_constraintHorizontal_bias="0.943"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.786"
+        app:layout_constraintVertical_bias="1.0"
         app:strokeColor="@android:color/background_light"
-        app:strokeWidth="1dp"/>
+        app:strokeWidth="1dp" />
 
     <com.fem.fem17display.MagicTextView
         android:id="@+id/textView12"
@@ -365,6 +371,7 @@
         android:text="℃"
         android:textColor="#000000"
         android:textSize="80sp"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/MTValue"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.01"
@@ -381,6 +388,7 @@
         android:text="℃"
         android:textColor="#000000"
         android:textSize="80sp"
+        android:visibility="gone"
         app:layout_constraintStart_toEndOf="@+id/INVValue"
         app:layout_constraintTop_toTopOf="@+id/textView12"
         app:strokeColor="@android:color/background_light"

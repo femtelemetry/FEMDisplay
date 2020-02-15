@@ -330,7 +330,7 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
                 mBTT.setText(msgStr);
             }
             else if(action == LAYOUT_RTD){
-                setContentView(R.layout.rtd);
+                setContentView(R.layout.rtd2);
                 NowLayout = RTD;
                 RefindId();
             }
