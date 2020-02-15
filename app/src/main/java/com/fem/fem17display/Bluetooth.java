@@ -206,6 +206,9 @@ public class Bluetooth extends Service {
                                 }
                             }
                         }
+                        else{
+                            values[VIEW_LV] = "-----";
+                        }
                         sendBroadcast(VIEW_LV, values[VIEW_LV]);
                         AddCloud("LV", values[VIEW_LV]);
 
@@ -223,12 +226,19 @@ public class Bluetooth extends Service {
                         int maxMT = 0;
                         MTs = values[VIEW_MT].trim().split("x", 0);
                         for(int n = 0; n < 4; n++){
-                            MTs[n] = MTs[n].split("\\.", 0)[0]; //整数にする
-                            if(Integer.valueOf(MTs[n]) >= maxMT){
-                                maxMT = Integer.valueOf(MTs[n]);
+                            if(!MTs[n].isEmpty()) {
+                                MTs[n] = MTs[n].split("\\.", 0)[0]; //整数にする
+                                if (Integer.valueOf(MTs[n]) >= maxMT) {
+                                    maxMT = Integer.valueOf(MTs[n]);
+                                }
                             }
                         }
-                        sendBroadcast(VIEW_MT, Integer.toString(maxMT));
+                        if(maxMT == 0){
+                            sendBroadcast(VIEW_MT, "-----");
+                        }
+                        else {
+                            sendBroadcast(VIEW_MT, Integer.toString(maxMT));
+                        }
                         AddCloud("MOTOR1", MTs[0]);
                         AddCloud("MOTOR2", MTs[1]);
                         AddCloud("MOTOR3", MTs[2]);
@@ -237,7 +247,12 @@ public class Bluetooth extends Service {
                         /**
                          * INV温度解析
                          */
-                        values[VIEW_INV] = values[VIEW_INV].split("\\.", 0)[0]; //整数にする
+                        if(!values[VIEW_INV].isEmpty()) {
+                            values[VIEW_INV] = values[VIEW_INV].split("\\.", 0)[0]; //整数にする
+                        }
+                        else{
+                            values[VIEW_INV] = "-----";
+                        }
                         sendBroadcast(VIEW_INV, values[VIEW_INV]);
                         AddCloud("INV", values[VIEW_INV]);
 
