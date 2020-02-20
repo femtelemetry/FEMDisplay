@@ -153,7 +153,7 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.lvon);
+        setContentView(R.layout.rtd2);
         NowLayout = LVON;
 
         //画面常にON

@@ -50,6 +50,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="172dp"
+        android:fontFamily="sans-serif"
         android:text="------"
         android:textColor="#000000"
         android:textSize="170sp"
@@ -77,6 +78,7 @@
         android:id="@+id/BTTstring"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:fontFamily="sans-serif"
         android:text="BTT"
         android:textColor="#000000"
         android:textSize="60sp"
@@ -87,7 +89,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.048"
         app:strokeColor="@android:color/background_light"
-        app:strokeWidth="1dp"/>
+        app:strokeWidth="1dp" />
 
     <TextView
         android:id="@+id/inputValue"
@@ -318,7 +320,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="276dp"
-        android:text="RTD"
+        android:text="---"
         android:textColor="#000000"
         android:textSize="70sp"
         app:layout_constraintBottom_toBottomOf="parent"

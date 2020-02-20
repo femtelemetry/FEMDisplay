@@ -50,7 +50,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="4dp"
-        android:text="100"
+        android:text="---"
         android:textColor="#000000"
         android:textSize="300sp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -58,7 +58,7 @@
         app:layout_constraintHorizontal_bias="0.367"
         app:layout_constraintStart_toStartOf="parent"
         app:strokeColor="@android:color/background_light"
-        app:strokeWidth="3dp" />
+        app:strokeWidth="6dp" />
 
     <TextView
         android:id="@+id/ERRORValueFL"
@@ -324,7 +324,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="276dp"
-        android:text="RTD"
+        android:text="---"
         android:textColor="#000000"
         android:textSize="70sp"
         app:layout_constraintBottom_toBottomOf="parent"
