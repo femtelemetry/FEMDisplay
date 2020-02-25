@@ -338,6 +338,18 @@ public class Bluetooth extends Service {
                         String[] ERRORs;
                         ERRORs = values[VIEW_ERR - numA].split("x", 0);
                         ERRFlag = !ERRORs[0].contains("-") || !ERRORs[1].contains("-") || !ERRORs[2].contains("-") || !ERRORs[3].contains("-");
+                        if(ERRFlag){
+                            AddCloud("ERROR1", ERRORs[0]);
+                            AddCloud("ERROR2", ERRORs[1]);
+                            AddCloud("ERROR3", ERRORs[2]);
+                            AddCloud("ERROR4", ERRORs[3]);
+                        }
+                        else{
+                            AddCloud("ERROR1", "-");
+                            AddCloud("ERROR2", "-");
+                            AddCloud("ERROR3", "-");
+                            AddCloud("ERROR4", "-");
+                        }
                         sendBroadcast(VIEW_ERRFR, ERRORs[0]);
                         sendBroadcast(VIEW_ERRFL, ERRORs[1]);
                         sendBroadcast(VIEW_ERRRR, ERRORs[2]);
