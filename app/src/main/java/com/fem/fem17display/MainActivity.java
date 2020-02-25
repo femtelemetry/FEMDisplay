@@ -19,6 +19,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
 public class MainActivity extends AppCompatActivity  implements View.OnClickListener {
     /* tag */
     static final String TAG = "BluetoothSample";
@@ -85,6 +89,9 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
     //接続ボタン
     Button connectButton;
 
+    //電流積算リセットボタン
+    Button zeroButton;
+
     //ステータス
     TextView mStatusTextView;
 
@@ -150,6 +157,8 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
     private BroadcastReceiver mReceiver = null;
     private IntentFilter mIntentFilter = null;
 
+    static final String CurrFilename = "sum.txt";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -175,6 +184,8 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
         Bluetooth_Image = findViewById(R.id.bluetooth);
         connectButton = (Button) findViewById(R.id.connectButton);
         connectButton.setOnClickListener(this);
+        zeroButton = (Button) findViewById(R.id.zeroButton);
+        zeroButton.setOnClickListener(this);
 
         //スリープ関連
         mDevicePolicyManager = (DevicePolicyManager)getSystemService(
@@ -212,6 +223,17 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
             // 接続されていない場合のみ
             if (!connectFlg) {
                 startService( new Intent( MainActivity.this, Bluetooth.class ) );
+            }
+        }
+        else if (v.equals(zeroButton)) {
+            try {
+                FileOutputStream fos = openFileOutput(CurrFilename, Context.MODE_PRIVATE);
+                String first = "0.0";
+                fos.write(first.getBytes());
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
     }

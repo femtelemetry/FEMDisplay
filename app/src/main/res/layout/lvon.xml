@@ -77,7 +77,7 @@
         android:layout_marginBottom="8dp"
         android:text="inputValue"
         android:textSize="15sp"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.008"
@@ -363,5 +363,14 @@
         android:textSize="40sp"
         app:layout_constraintBottom_toBottomOf="@+id/INVValue"
         app:layout_constraintEnd_toEndOf="@+id/INVValue" />
+
+    <Button
+        android:id="@+id/zeroButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="!RESET!"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

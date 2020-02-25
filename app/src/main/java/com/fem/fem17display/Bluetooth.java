@@ -4,6 +4,7 @@ import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
+import android.content.Context;
 import android.content.Intent;
 import android.media.AudioAttributes;
 import android.media.AudioManager;
@@ -20,14 +21,21 @@ import com.nifcloud.mbaas.core.NCMBException;
 import com.nifcloud.mbaas.core.NCMBObject;
 import com.nifcloud.mbaas.core.NCMBQuery;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
 import static com.fem.fem17display.MainActivity.*;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class Bluetooth extends Service {
 
@@ -74,9 +82,9 @@ public class Bluetooth extends Service {
     boolean isWakelock = false;
 
     //電流積算
-    float SumCURR; //満充電時から使った電流の合計
-    float MaxCURR; //マシンが使う全合計電流値
-    float BTT; //計算したバッテリ残量値
+    double SumCURR; //満充電時から使った電流の合計
+    final double MaxCURR = 10000.0; //マシンが使う全合計電流値
+    double BTT; //計算したバッテリ残量値
     String Battery;
 
     MainActivity mc = new MainActivity();
@@ -195,7 +203,7 @@ public class Bluetooth extends Service {
                         /**
                          * LV解析
                          */
-                        if (!values[VIEW_LV].isEmpty()) {
+                        if (!values[VIEW_LV].contains("-")) {
                             if (Float.parseFloat(values[VIEW_LV]) < 10.0) {
                                 if (values[VIEW_LV].length() >= 3) {
                                     values[VIEW_LV] = values[VIEW_LV].substring(0, 3);
@@ -205,19 +213,27 @@ public class Bluetooth extends Service {
                                     values[VIEW_LV] = values[VIEW_LV].substring(0, 4);
                                 }
                             }
+                            AddCloud("LV", values[VIEW_LV]);
                         }
                         else{
                             values[VIEW_LV] = "-----";
                         }
                         sendBroadcast(VIEW_LV, values[VIEW_LV]);
-                        AddCloud("LV", values[VIEW_LV]);
 
                         /**
                          * HV解析
                          */
+                        if(!values[VIEW_HV].contains("-")) {
+                            sendBroadcast(VIEW_HV, values[VIEW_HV]);
+                            AddCloud("HV", values[VIEW_HV]);
+                            HVFlag = true;
+                        }
+                        else{
+                            HVFlag = false;
+                            values[VIEW_HV] = "-----";
+                        }
                         sendBroadcast(VIEW_HV, values[VIEW_HV]);
-                        AddCloud("HV", values[VIEW_HV]);
-                        HVFlag = !values[VIEW_HV].contains("-");
+                        //HVFlag = !values[VIEW_HV].contains("-");
 
                         /**
                          * MOTOR温度解析
@@ -226,10 +242,24 @@ public class Bluetooth extends Service {
                         int maxMT = 0;
                         MTs = values[VIEW_MT].trim().split("x", 0);
                         for(int n = 0; n < 4; n++){
-                            if(!MTs[n].isEmpty()) {
+                            if(!MTs[n].contains("-")) {
                                 MTs[n] = MTs[n].split("\\.", 0)[0]; //整数にする
                                 if (Integer.valueOf(MTs[n]) >= maxMT) {
                                     maxMT = Integer.valueOf(MTs[n]);
+                                }
+                                switch (n){
+                                    case 0:
+                                        AddCloud("MOTOR1", MTs[0]);
+                                        break;
+                                    case 1:
+                                        AddCloud("MOTOR2", MTs[0]);
+                                        break;
+                                    case 2:
+                                        AddCloud("MOTOR3", MTs[0]);
+                                        break;
+                                    case 3:
+                                        AddCloud("MOTOR4", MTs[0]);
+                                        break;
                                 }
                             }
                         }
@@ -239,22 +269,18 @@ public class Bluetooth extends Service {
                         else {
                             sendBroadcast(VIEW_MT, Integer.toString(maxMT));
                         }
-                        AddCloud("MOTOR1", MTs[0]);
-                        AddCloud("MOTOR2", MTs[1]);
-                        AddCloud("MOTOR3", MTs[2]);
-                        AddCloud("MOTOR4", MTs[3]);
 
                         /**
                          * INV温度解析
                          */
-                        if(!values[VIEW_INV].isEmpty()) {
+                        if(!values[VIEW_INV].contains("-")) {
                             values[VIEW_INV] = values[VIEW_INV].split("\\.", 0)[0]; //整数にする
+                            AddCloud("INV", values[VIEW_INV]);
                         }
                         else{
                             values[VIEW_INV] = "-----";
                         }
                         sendBroadcast(VIEW_INV, values[VIEW_INV]);
-                        AddCloud("INV", values[VIEW_INV]);
 
                         // データストアへの登録
                         objV.saveInBackground(new DoneCallback() {
@@ -346,72 +372,62 @@ public class Bluetooth extends Service {
                          * 電流値解析
                          */
                         if(!values[1].contains("-")) {
-                            queryC = new NCMBQuery<>("Current");
-                            objC = new NCMBObject("Current");
-                            queryM = new NCMBQuery<>("MAX");
 
                             AddCloud("CURRENT", values[1]);
 
-                            //マシンのMAX電流値を取得
-                            queryM.addOrderByDescending("createDate");
-                            queryM.setLimit(1);
+                            String SUM = null;
                             try {
-                                // データストアでの検索を行う
-                                List<NCMBObject> objects = queryM.find();
-                                MaxCURR = Float.valueOf(objects.get(0).getString("MAX"));
-                            } catch (NCMBException e) {
-                                // Exception発生時の処理
-                            }
-                            //現在の電流積算値を取得
-                            queryC.addOrderByDescending("createDate");
-                            queryC.setLimit(1);
-                            try {
-                                // データストアでの検索を行う
-                                List<NCMBObject> objects = queryC.find();
-                                SumCURR = Float.valueOf(objects.get(0).getString("Sum"));
-                            } catch (NCMBException e) {
-                                // Exception発生時の処理
-                            }
-                            SumCURR = SumCURR + Float.valueOf(values[1]);
-                            //電流積算値を更新
-                            try {
-                                objC.put("Sum", SumCURR);
-                            } catch (NCMBException e) {
-                                e.printStackTrace();
-                            }
-                            // データストアへの登録
-                            objC.saveInBackground(new DoneCallback() {
-                                @Override
-                                public void done(NCMBException e) {
-                                    if (e != null) {
-                                        //保存に失敗した場合の処理
-                                        e.printStackTrace();
-                                    } else {
-                                        //保存に成功した場合の処理
-
-                                    }
+                                //現在の電流積算値を取得
+                                FileInputStream fileInputStream = openFileInput(CurrFilename);
+                                BufferedReader reader = new BufferedReader(new InputStreamReader(fileInputStream));
+                                String lineBuffer;
+                                while ((lineBuffer = reader.readLine()) != null) {
+                                    SUM = lineBuffer;
                                 }
-                            });
-                            //バッテリ残量値を計算
-                            BTT = (1 - SumCURR / MaxCURR) * 100;
-                            Battery = String.valueOf((int) BTT);
-                            sendBroadcast(VIEW_BTT, Battery);
-                            AddCloud("BTT", Battery);
+                            } catch(FileNotFoundException e){
+                                FileOutputStream fos = openFileOutput(CurrFilename, Context.MODE_PRIVATE);
+                                String first = "0.0";
+                                fos.write(first.getBytes());
+                                SUM = "0.0";
+                            } catch(IOException e){
 
-                            // データストアへの登録
-                            objV.saveInBackground(new DoneCallback() {
-                                @Override
-                                public void done(NCMBException e) {
-                                    if (e != null) {
-                                        //保存に失敗した場合の処理
-                                        e.printStackTrace();
-                                    } else {
-                                        //保存に成功した場合の処理
+                            } finally{
+                                //電流積算値を更新
+                                SumCURR = Double.parseDouble(SUM) + Double.parseDouble(values[1]);
+                                try {
+                                    FileOutputStream fos = openFileOutput(CurrFilename, Context.MODE_PRIVATE);
+                                    SUM = String.valueOf(SumCURR);
+                                    fos.write(SUM.getBytes());
+                                    fos.close();
 
-                                    }
+                                    //バッテリ残量値を計算
+                                    BTT = (1.0 - SumCURR / MaxCURR) * 100.0;
+                                    Battery = String.valueOf(BTT);
+                                    sendBroadcast(VIEW_BTT, Battery);
+                                    //sendBroadcast(VIEW_INPUT, Battery);
+                                    AddCloud("SUMCURR", SUM);
+                                    AddCloud("BTT", Battery);
+
+                                    // データストアへの登録
+                                    objV.saveInBackground(new DoneCallback() {
+                                        @Override
+                                        public void done(NCMBException e) {
+                                            if (e != null) {
+                                                //保存に失敗した場合の処理
+                                                e.printStackTrace();
+                                            } else {
+                                                //保存に成功した場合の処理
+
+                                            }
+                                        }
+                                    });
+                                } catch (IOException e) {
+
                                 }
-                            });
+                            }
+                            values[1] = "0";
                         }
+
                     }
                     else{
                         //正式なデータが届いていない時の処理
@@ -433,10 +449,11 @@ public class Bluetooth extends Service {
 
                 SleepCount++;
                 Log.i(TAG, "SleepCount=" + SleepCount);
+                sendBroadcast(VIEW_INPUT, "error"+ e);
                 sendBroadcast(VIEW_BLUETOOTH, "bno");
 
                 //Bluetooth未接続ならスリープ状態へ
-                if(SleepCount > 1 && !isSleep) {
+                if(SleepCount > 2 && !isSleep) {
                     isSleep = true;
                     if(isWakelock) {
                         isWakelock = false;
