@@ -4,64 +4,74 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#FF0000"
     tools:context=".MainActivity">
 
     <TextView
         android:id="@+id/ERRORValueRR"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="52dp"
-        android:layout_marginLeft="52dp"
-        android:layout_marginTop="152dp"
-        android:text="RR:errormessage"
+        android:layout_width="404dp"
+        android:layout_height="50dp"
+        android:fontFamily="sans-serif"
+        android:text="RR:----------------------\n---------------------------------"
+        android:textColor="#FFFFFF"
         android:textSize="20sp"
-        app:layout_constraintStart_toStartOf="@+id/ERRORString"
-        app:layout_constraintTop_toBottomOf="@+id/ERRORString" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/MTString"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/ERRORValueFL"
+        app:layout_constraintTop_toBottomOf="@+id/ERRORValueFL"
+        app:layout_constraintVertical_bias="0.03" />
 
     <TextView
         android:id="@+id/ERRORValueRL"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="52dp"
-        android:layout_marginLeft="52dp"
-        android:layout_marginTop="232dp"
-        android:text="RL:errormessage"
+        android:layout_width="404dp"
+        android:layout_height="50dp"
+        android:layout_marginBottom="16dp"
+        android:fontFamily="sans-serif"
+        android:text="RL:--------------------------\n--------------------------------------"
+        android:textColor="#FFFFFF"
         android:textSize="20sp"
-        app:layout_constraintStart_toStartOf="@+id/ERRORString"
-        app:layout_constraintTop_toBottomOf="@+id/ERRORString" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/MTString"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/ERRORValueRR"
+        app:layout_constraintTop_toBottomOf="@+id/ERRORValueRR"
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/ERRORValueFL"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="56dp"
-        android:layout_marginLeft="56dp"
-        android:layout_marginTop="92dp"
-        android:text="FL:errormessage"
+        android:layout_width="404dp"
+        android:layout_height="50dp"
+        android:fontFamily="sans-serif"
+        android:text="FL:---------------------\n---------------------------------"
+        android:textColor="#FFFFFF"
         android:textSize="20sp"
-        app:layout_constraintStart_toStartOf="@+id/ERRORString"
-        app:layout_constraintTop_toBottomOf="@+id/ERRORString" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/MTString"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/ERRORValueFR"
+        app:layout_constraintTop_toBottomOf="@+id/ERRORValueFR"
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/BTTstring"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="420dp"
-        android:layout_marginLeft="420dp"
-        android:layout_marginTop="16dp"
         android:text="BTT"
+        android:textColor="#FFFFFF"
         android:textSize="30sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/HVValue" />
+        app:layout_constraintEnd_toStartOf="@+id/bttValue"
+        app:layout_constraintTop_toTopOf="@+id/bttValue" />
 
     <TextView
         android:id="@+id/bttValue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="------"
-        android:textSize="70sp"
-        app:layout_constraintStart_toStartOf="@+id/BTTstring"
-        app:layout_constraintTop_toBottomOf="@+id/BTTstring" />
+        android:textColor="#FFFFFF"
+        android:textSize="40sp"
+        app:layout_constraintStart_toStartOf="@+id/MTValue"
+        app:layout_constraintTop_toBottomOf="@+id/MTValue" />
 
     <TextView
         android:id="@+id/inputValue"
@@ -134,12 +144,15 @@
         android:id="@+id/HVstring"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="216dp"
-        android:layout_marginLeft="216dp"
         android:text="HV"
+        android:textColor="#FFFFFF"
         android:textSize="30sp"
-        app:layout_constraintStart_toEndOf="@+id/LVstring"
-        app:layout_constraintTop_toTopOf="@+id/LVstring" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.82"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/RTDValue"
+        app:layout_constraintVertical_bias="0.04" />
 
     <TextView
         android:id="@+id/LVValue"
@@ -159,12 +172,12 @@
         android:id="@+id/HVValue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginLeft="32dp"
+        android:layout_marginTop="10dp"
         android:text="------"
-        android:textSize="70sp"
-        app:layout_constraintStart_toStartOf="@+id/HVstring"
-        app:layout_constraintTop_toBottomOf="@+id/HVstring" />
+        android:textColor="#FFFFFF"
+        android:textSize="40sp"
+        app:layout_constraintStart_toEndOf="@+id/HVstring"
+        app:layout_constraintTop_toBottomOf="@+id/RTDValue" />
 
     <TextView
         android:id="@+id/bluetoothValue"
@@ -181,69 +194,75 @@
         android:id="@+id/MTString"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="100dp"
-        android:layout_marginLeft="100dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="4dp"
         android:text="MOTOR"
+        android:textColor="#FFFFFF"
         android:textSize="30sp"
-        app:layout_constraintStart_toEndOf="@+id/HVstring"
-        app:layout_constraintTop_toTopOf="@+id/HVstring" />
+        app:layout_constraintEnd_toStartOf="@+id/MTValue"
+        app:layout_constraintTop_toTopOf="@+id/MTValue" />
 
     <TextView
         android:id="@+id/MTValue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginLeft="32dp"
         android:text="------"
-        android:textSize="70sp"
-        app:layout_constraintStart_toStartOf="@+id/MTString"
-        app:layout_constraintTop_toBottomOf="@+id/MTString" />
+        android:textColor="#FFFFFF"
+        android:textSize="40sp"
+        app:layout_constraintStart_toStartOf="@+id/INVValue"
+        app:layout_constraintTop_toBottomOf="@+id/INVValue" />
 
     <TextView
         android:id="@+id/INVString"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginLeft="32dp"
         android:text="INV"
+        android:textColor="#FFFFFF"
         android:textSize="30sp"
-        app:layout_constraintStart_toEndOf="@+id/MTString"
-        app:layout_constraintTop_toTopOf="@+id/MTString" />
+        app:layout_constraintEnd_toStartOf="@+id/INVValue"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@+id/HVstring"
+        app:layout_constraintTop_toTopOf="@+id/INVValue" />
 
     <TextView
         android:id="@+id/INVValue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="48dp"
-        android:layout_marginLeft="48dp"
         android:text="------"
-        android:textSize="70sp"
-        app:layout_constraintStart_toStartOf="@+id/INVString"
-        app:layout_constraintTop_toBottomOf="@+id/INVString" />
+        android:textColor="#FFFFFF"
+        android:textSize="40sp"
+        app:layout_constraintStart_toStartOf="@+id/HVValue"
+        app:layout_constraintTop_toBottomOf="@+id/HVValue" />
 
     <TextView
         android:id="@+id/ERRORString"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
+        android:fontFamily="@font/acme"
         android:text="エラー"
-        android:textSize="60sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:textColor="#FFFFFF"
+        android:textSize="90sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/imageView2"
+        app:layout_constraintStart_toEndOf="@+id/imageView3"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/ERRORValueFR"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="56dp"
-        android:layout_marginLeft="56dp"
-        android:layout_marginTop="8dp"
-        android:text="FR:errormessage"
+        android:layout_width="404dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="100dp"
+        android:layout_marginLeft="100dp"
+        android:fontFamily="sans-serif"
+        android:text="FR:--------------------\n---------------------------"
+        android:textColor="#FFFFFF"
         android:textSize="20sp"
-        app:layout_constraintStart_toStartOf="@+id/ERRORString"
-        app:layout_constraintTop_toBottomOf="@+id/ERRORString" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/MTString"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ERRORString"
+        app:layout_constraintVertical_bias="0.050000012" />
 
     <TextView
         android:id="@+id/RTDString"
@@ -264,11 +283,16 @@
         android:id="@+id/RTDValue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="RTD"
+        android:layout_marginTop="7dp"
+        android:text="---"
+        android:textColor="#FFFFFF"
         android:textSize="70sp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/RTDString" />
+        app:layout_constraintHorizontal_bias="0.06"
+        app:layout_constraintStart_toEndOf="@+id/imageView2"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
 
     <ImageView
         android:id="@+id/bluetooth"
@@ -280,5 +304,79 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/bluetooth_no" />
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="90sp"
+        android:layout_height="90sp"
+        android:layout_marginEnd="200dp"
+        android:layout_marginRight="200dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/ERRORString"
+        app:layout_constraintVertical_bias="0.050000012"
+        app:srcCompat="@drawable/icon0079" />
+
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="90sp"
+        android:layout_height="90sp"
+        android:layout_marginStart="7dp"
+        android:layout_marginLeft="7dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.050000012"
+        app:srcCompat="@drawable/icon0079" />
+
+    <TextView
+        android:id="@+id/textView10"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="V"
+        android:textColor="#FFFFFF"
+        android:textSize="30sp"
+        app:layout_constraintBottom_toBottomOf="@+id/HVValue"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/HVValue" />
+
+    <TextView
+        android:id="@+id/degree"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="℃"
+        android:textColor="#FFFFFF"
+        android:textSize="30sp"
+        app:layout_constraintBottom_toTopOf="@+id/MTValue"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/INVValue" />
+
+    <TextView
+        android:id="@+id/textView15"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="℃"
+        android:textColor="#FFFFFF"
+        android:textSize="30sp"
+        app:layout_constraintBottom_toTopOf="@+id/bttValue"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/MTValue" />
+
+    <TextView
+        android:id="@+id/textView16"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="%"
+        android:textColor="#FFFFFF"
+        android:textSize="30sp"
+        app:layout_constraintBottom_toBottomOf="@+id/bttValue"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/bttValue" />
 
 </android.support.constraint.ConstraintLayout>

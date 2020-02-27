@@ -4,7 +4,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/pattern"
     tools:context=".MainActivity">
+
+    <TextView
+        android:id="@+id/textView7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="℃"
+        android:textColor="#000000"
+        android:textSize="40sp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/INVValue"
+        app:layout_constraintEnd_toEndOf="@+id/INVValue" />
 
     <TextView
         android:id="@+id/ERRORValueFL"
@@ -50,25 +65,31 @@
 
     <TextView
         android:id="@+id/bttValue"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="170dp"
+        android:layout_height="130dp"
+        android:layout_marginEnd="60dp"
+        android:layout_marginRight="60dp"
+        android:background="@android:drawable/picture_frame"
+        android:fontFamily="@font/acme"
+        android:gravity="center"
         android:text="------"
+        android:textColor="#000000"
         android:textSize="70sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/BTTstring"
+        app:layout_constraintEnd_toStartOf="@+id/MTValue"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/BTTstring" />
 
     <TextView
         android:id="@+id/BTTstring"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="48dp"
-        android:layout_marginLeft="48dp"
-        android:layout_marginTop="28dp"
+        android:fontFamily="@font/acme"
         android:text="BTT"
+        android:textColor="#000000"
         android:textSize="30sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/HVValue" />
+        app:layout_constraintEnd_toEndOf="@+id/bttValue"
+        app:layout_constraintStart_toStartOf="@+id/bttValue"
+        app:layout_constraintTop_toBottomOf="@+id/LVValue" />
 
     <TextView
         android:id="@+id/inputValue"
@@ -118,45 +139,54 @@
         android:id="@+id/LVstring"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="40dp"
-        android:layout_marginLeft="40dp"
-        android:layout_marginTop="8dp"
+        android:fontFamily="@font/acme"
         android:text="LV"
+        android:textColor="#000000"
         android:textSize="30sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/inputValue" />
+        app:layout_constraintEnd_toEndOf="@+id/LVValue"
+        app:layout_constraintStart_toStartOf="@+id/LVValue"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/HVstring"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="104dp"
-        android:layout_marginLeft="104dp"
+        android:fontFamily="@font/acme"
         android:text="HV"
+        android:textColor="#000000"
         android:textSize="30sp"
-        app:layout_constraintStart_toEndOf="@+id/LVstring"
-        app:layout_constraintTop_toTopOf="@+id/LVstring" />
+        app:layout_constraintEnd_toEndOf="@+id/HVValue"
+        app:layout_constraintStart_toStartOf="@+id/HVValue"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/LVValue"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
+        android:layout_width="170dp"
+        android:layout_height="130dp"
+        android:layout_marginEnd="60dp"
+        android:layout_marginRight="60dp"
+        android:background="@android:drawable/picture_frame"
+        android:fontFamily="@font/acme"
+        android:gravity="center"
         android:text="------"
+        android:textColor="#000000"
         android:textSize="70sp"
-        app:layout_constraintStart_toStartOf="@+id/LVstring"
+        app:layout_constraintEnd_toStartOf="@+id/HVValue"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/LVstring" />
 
     <TextView
         android:id="@+id/HVValue"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
+        android:layout_width="170dp"
+        android:layout_height="130dp"
+        android:background="@android:drawable/picture_frame"
+        android:fontFamily="@font/acme"
+        android:gravity="center"
         android:text="------"
+        android:textColor="#000000"
         android:textSize="70sp"
-        app:layout_constraintStart_toStartOf="@+id/HVstring"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/HVstring" />
 
     <TextView
@@ -174,44 +204,54 @@
         android:id="@+id/MTString"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="104dp"
-        android:layout_marginLeft="104dp"
+        android:fontFamily="@font/acme"
         android:text="MOTOR"
+        android:textColor="#000000"
         android:textSize="30sp"
-        app:layout_constraintStart_toEndOf="@+id/HVstring"
-        app:layout_constraintTop_toTopOf="@+id/HVstring" />
+        app:layout_constraintEnd_toEndOf="@+id/MTValue"
+        app:layout_constraintStart_toStartOf="@+id/MTValue"
+        app:layout_constraintTop_toBottomOf="@+id/HVValue" />
 
     <TextView
         android:id="@+id/MTValue"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
+        android:layout_width="170dp"
+        android:layout_height="130dp"
+        android:background="@android:drawable/picture_frame"
+        android:fontFamily="@font/acme"
+        android:gravity="center"
         android:text="------"
+        android:textColor="#000000"
         android:textSize="70sp"
-        app:layout_constraintStart_toStartOf="@+id/MTString"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/MTString" />
 
     <TextView
         android:id="@+id/INVString"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="60dp"
-        android:layout_marginLeft="60dp"
+        android:fontFamily="@font/acme"
         android:text="INV"
+        android:textColor="#000000"
         android:textSize="30sp"
-        app:layout_constraintStart_toEndOf="@+id/MTString"
+        app:layout_constraintEnd_toEndOf="@+id/INVValue"
+        app:layout_constraintStart_toStartOf="@+id/INVValue"
         app:layout_constraintTop_toTopOf="@+id/MTString" />
 
     <TextView
         android:id="@+id/INVValue"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
+        android:layout_width="170dp"
+        android:layout_height="130dp"
+        android:layout_marginStart="60dp"
+        android:layout_marginLeft="60dp"
+        android:background="@android:drawable/picture_frame"
+        android:fontFamily="@font/acme"
+        android:gravity="center"
         android:text="------"
+        android:textColor="#000000"
         android:textSize="70sp"
-        app:layout_constraintStart_toStartOf="@+id/INVString"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/MTValue"
         app:layout_constraintTop_toBottomOf="@+id/INVString" />
 
     <TextView
@@ -258,17 +298,14 @@
 
     <TextView
         android:id="@+id/RTDValue"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
+        android:layout_width="128dp"
+        android:layout_height="116dp"
         android:text="RTD"
+        android:textColor="#000000"
         android:textSize="70sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/INVValue"
-        app:layout_constraintTop_toBottomOf="@+id/INVValue" />
+        android:visibility="gone"
+        tools:layout_editor_absoluteX="554dp"
+        tools:layout_editor_absoluteY="262dp" />
 
     <ImageView
         android:id="@+id/bluetooth"
@@ -280,5 +317,82 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/bluetooth_no" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="60dp"
+        android:layout_marginLeft="60dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/HVValue"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/hv" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="0dp"
+        android:layout_height="41dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="16dp"
+        android:text="V"
+        android:textColor="#000000"
+        android:textSize="40sp"
+        app:layout_constraintBottom_toBottomOf="@+id/LVValue"
+        app:layout_constraintEnd_toEndOf="@+id/LVValue" />
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="0dp"
+        android:layout_height="41dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="16dp"
+        android:text="V"
+        android:textColor="#000000"
+        android:textSize="40sp"
+        app:layout_constraintBottom_toBottomOf="@+id/HVValue"
+        app:layout_constraintEnd_toEndOf="@+id/HVValue" />
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="℃"
+        android:textColor="#000000"
+        android:textSize="40sp"
+        app:layout_constraintBottom_toBottomOf="@+id/MTValue"
+        app:layout_constraintEnd_toEndOf="@+id/MTValue" />
+
+    <TextView
+        android:id="@+id/textView8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="％"
+        android:textColor="#000000"
+        android:textSize="40sp"
+        app:layout_constraintBottom_toBottomOf="@+id/bttValue"
+        app:layout_constraintEnd_toEndOf="@+id/bttValue" />
+
+    <TextView
+        android:id="@+id/textView9"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="℃"
+        android:textColor="#000000"
+        android:textSize="40sp"
+        app:layout_constraintBottom_toBottomOf="@+id/INVValue"
+        app:layout_constraintEnd_toEndOf="@+id/INVValue" />
 
 </android.support.constraint.ConstraintLayout>

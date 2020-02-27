@@ -162,7 +162,7 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.lvon);
+        setContentView(R.layout.rtd2);
         NowLayout = LVON;
 
         //画面常にON
@@ -352,7 +352,7 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
                 mBTT.setText(msgStr);
             }
             else if(action == LAYOUT_RTD){
-                setContentView(R.layout.rtd);
+                setContentView(R.layout.rtd2);
                 NowLayout = RTD;
                 RefindId();
             }
