@@ -13,6 +13,7 @@ import android.os.Build;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.util.Log;
+import android.widget.ProgressBar;
 
 import com.nifcloud.mbaas.core.DoneCallback;
 import com.nifcloud.mbaas.core.FindCallback;
@@ -83,7 +84,8 @@ public class Bluetooth extends Service {
 
     //電流積算
     double SumCURR; //満充電時から使った電流の合計
-    final double MaxCURR = 10000.0; //マシンが使う全合計電流値
+    static String SUM; //使った電流値の文字列
+    static final double MaxCURR = 10000.0; //マシンが使う全合計電流値
     double BTT; //計算したバッテリ残量値
     String Battery;
 
@@ -91,7 +93,7 @@ public class Bluetooth extends Service {
 
     @Override
     public void onCreate() {
-        NCMB.initialize(this.getApplicationContext(), "7fbdc0ab79557c97b30cd17cf7fdb4220e9a20b2ea5c8bf1e47af25d3e859b66", "5049e231f805ffc63855055fc8861b783f511576e6096fffaebc395f8e0e1ed3");
+        NCMB.initialize(this.getApplicationContext(), "dcce5f03061b495802c3262b617e1b2b791fc33cf035a3f1d31f3afe51cc0235", "1b81571033e7b1837517aa6c75049d9c42d0069fc8bca01e21c031169f3116c6");
 
         // Bluetoothのデバイス名を取得
         // デバイス名は、RNBT-XXXXになるため、
@@ -195,7 +197,7 @@ public class Bluetooth extends Service {
                     if (readMsg.trim().startsWith("A") && readMsg.trim().endsWith("A")) {
                         sendBroadcast(VIEW_INPUT, readMsg.trim());
 
-                        objV = new NCMBObject("Voltage");
+                        objV = new NCMBObject("CLOUD");
                         sendBroadcast(VIEW_STATUS, " ");
                         String[] values;
                         values = readMsg.trim().split("/", 0);
@@ -301,7 +303,7 @@ public class Bluetooth extends Service {
 
                         sendBroadcast(VIEW_INPUT, readMsg.trim());
 
-                        objV = new NCMBObject("Voltage");
+                        objV = new NCMBObject("CLOUD");
                         sendBroadcast(VIEW_STATUS, " ");
 
                         String[] values;
@@ -328,16 +330,52 @@ public class Bluetooth extends Service {
                         }
                         sendBroadcast(VIEW_RTD, result_RTD);
                         AddCloud("RtD1", RTDs[0]);
-                        AddCloud("RtD2", RTDs[0]);
-                        AddCloud("RtD3", RTDs[0]);
-                        AddCloud("RtD4", RTDs[0]);
+                        AddCloud("RtD2", RTDs[1]);
+                        AddCloud("RtD3", RTDs[2]);
+                        AddCloud("RtD4", RTDs[3]);
 
                         /**
                          * ERROR解析
                          */
                         String[] ERRORs;
                         ERRORs = values[VIEW_ERR - numA].split("x", 0);
-                        ERRFlag = !ERRORs[0].contains("-") || !ERRORs[1].contains("-") || !ERRORs[2].contains("-") || !ERRORs[3].contains("-");
+                        ERRFlag = !ERRORs[0].startsWith("-") || !ERRORs[1].startsWith("-") || !ERRORs[2].startsWith("-") || !ERRORs[3].startsWith("-");
+                        for(int n = 0; n < 4; n++) {
+                            String[] s_err;
+                            s_err = ERRORs[n].split(",", 0);
+                            ERRORs[n] = "Error:" + s_err[0] + " Info:[1]" + s_err[1] + " [2]" + s_err[2] + " [3]" + s_err[3];
+                            if(s_err[0].contains("2310")) {
+                                ERRORs[n] += "\nEncoder communication";
+                            }
+                            else if(s_err[0].contains("3587") && !(s_err[1].contains("-"))){
+                                ERRORs[n] += "\nError during operation";
+                            }
+                            else if(s_err[0].contains("3587")){
+                                ERRORs[n] += "\nTemperature cabinet too high";
+                            }
+                            else if(s_err[0].contains("d1")){
+                                ERRORs[n] += "\n出力制限① インバータ温度50℃↑";
+                            }
+                            else if(s_err[0].contains("d2")){
+                                ERRORs[n] += "\n出力制限② モータ温度125℃↑";
+                            }
+                            else if(s_err[0].contains("d3")){
+                                ERRORs[n] += "\n出力制限③ IGBT温度115℃↑";
+                            }
+                            else if(s_err[0].contains("d4")){
+                                ERRORs[n] += "\n出力制限④ HV250V↓";
+                            }
+                            else if(s_err[0].contains("d5")){
+                                ERRORs[n] += "\n出力制限⑤ HV720V↑";
+                            }
+                            else if(s_err[0].contains("d0")){
+                                ERRORs[n] += "\n出力制限";
+                            }
+                        }
+                        sendBroadcast(VIEW_ERRFR, ERRORs[0]);
+                        sendBroadcast(VIEW_ERRFL, ERRORs[1]);
+                        sendBroadcast(VIEW_ERRRR, ERRORs[2]);
+                        sendBroadcast(VIEW_ERRRL, ERRORs[3]);
                         if(ERRFlag){
                             AddCloud("ERROR1", ERRORs[0]);
                             AddCloud("ERROR2", ERRORs[1]);
@@ -350,10 +388,6 @@ public class Bluetooth extends Service {
                             AddCloud("ERROR3", "-");
                             AddCloud("ERROR4", "-");
                         }
-                        sendBroadcast(VIEW_ERRFR, ERRORs[0]);
-                        sendBroadcast(VIEW_ERRFL, ERRORs[1]);
-                        sendBroadcast(VIEW_ERRRR, ERRORs[2]);
-                        sendBroadcast(VIEW_ERRRL, ERRORs[3]);
 
                         // データストアへの登録
                         objV.saveInBackground(new DoneCallback() {
@@ -374,7 +408,7 @@ public class Bluetooth extends Service {
 
                         sendBroadcast(VIEW_INPUT, readMsg.trim());
 
-                        objV = new NCMBObject("Voltage");
+                        objV = new NCMBObject("CLOUD");
                         sendBroadcast(VIEW_STATUS, " ");
 
                         String[] values;
@@ -387,7 +421,6 @@ public class Bluetooth extends Service {
 
                             AddCloud("CURRENT", values[1]);
 
-                            String SUM = null;
                             try {
                                 //現在の電流積算値を取得
                                 FileInputStream fileInputStream = openFileInput(CurrFilename);
@@ -401,6 +434,9 @@ public class Bluetooth extends Service {
                                 String first = "0.0";
                                 fos.write(first.getBytes());
                                 SUM = "0.0";
+                                String MAX = String.valueOf(MaxCURR);
+                                String NOWBTT = SUM + "/" + MAX;
+                                sendBroadcast(VIEW_NOWBTT, NOWBTT);
                             } catch(IOException e){
 
                             } finally{
@@ -415,10 +451,14 @@ public class Bluetooth extends Service {
                                     //バッテリ残量値を計算
                                     BTT = (1.0 - SumCURR / MaxCURR) * 100.0;
                                     Battery = String.valueOf(BTT);
-                                    sendBroadcast(VIEW_BTT, Battery);
+                                    //sendBroadcast(VIEW_BTT, Battery);
                                     //sendBroadcast(VIEW_INPUT, Battery);
                                     AddCloud("SUMCURR", SUM);
-                                    AddCloud("BTT", Battery);
+                                    //小数点以下文字切り取り処理
+                                    String[] Batteries;
+                                    Batteries = Battery.split("\\.", 0);
+                                    sendBroadcast(VIEW_BTT, Batteries[0]);   //バッテリ残量表示
+                                    AddCloud("BTT", Batteries[0]);   //バッテリ残量クラウド送信
 
                                     // データストアへの登録
                                     objV.saveInBackground(new DoneCallback() {
@@ -449,6 +489,10 @@ public class Bluetooth extends Service {
                      * レイアウト変更フェーズ
                      */
                     LayoutChange();
+                    //現在の電流積算値とMAX電流値表示 デバッグ用
+                    String MAX = String.valueOf(MaxCURR);
+                    String NOWBTT = SUM + "/" + MAX;
+                    sendBroadcast(VIEW_NOWBTT, NOWBTT);
                 }
             } catch (Exception e) {
 
@@ -492,7 +536,7 @@ public class Bluetooth extends Service {
     public void LayoutChange(){
         if(ERRFlag){
             if(!(NowLayout == ERR)) {
-                //RTDモードに遷移
+                //ERRモードに遷移
                 sendBroadcast(LAYOUT_ERR, null);
             }
         }

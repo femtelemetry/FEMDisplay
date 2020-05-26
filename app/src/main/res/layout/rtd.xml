@@ -8,7 +8,7 @@
     tools:context=".MainActivity">
 
     <ProgressBar
-        android:id="@+id/progressBar"
+        android:id="@+id/bttBar"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -21,6 +21,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/nowbtt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Now/Max"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <TextView
         android:id="@+id/ERRORValueRL"
@@ -43,7 +51,9 @@
         android:text="RR:errormessage"
         android:textColor="@android:color/black"
         android:textSize="20sp"
-        android:visibility="gone" />
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.fem.fem17display.MagicTextView
         android:id="@+id/bttValue"
@@ -204,12 +214,14 @@
         android:id="@+id/bluetoothValue"
         android:layout_width="360dp"
         android:layout_height="50dp"
+        android:layout_marginStart="103dp"
+        android:layout_marginLeft="103dp"
         android:text="BluetoothStatus"
         android:textColor="@android:color/black"
         android:textSize="15sp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
-        tools:layout_editor_absoluteX="103dp" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <com.fem.fem17display.MagicTextView
         android:id="@+id/MTString"
@@ -350,7 +362,7 @@
         android:textColor="#000000"
         android:textSize="80sp"
         app:layout_constraintBottom_toBottomOf="@+id/bttValue"
-        app:layout_constraintEnd_toEndOf="@+id/progressBar"
+        app:layout_constraintEnd_toEndOf="@+id/bttBar"
         app:layout_constraintHorizontal_bias="0.775"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

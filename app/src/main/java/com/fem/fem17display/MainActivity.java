@@ -16,12 +16,19 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+
+import static com.fem.fem17display.Bluetooth.MaxCURR;
+import static com.fem.fem17display.Bluetooth.SUM;
 
 public class MainActivity extends AppCompatActivity  implements View.OnClickListener {
     /* tag */
@@ -61,6 +68,9 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
 
     //Action(BTT)
     static final int VIEW_BTT = 9;
+
+    //Action(NOWBTT)
+    static final int VIEW_NOWBTT = 10;
 
     //Action(LayoutChange:RTD)
     static final int LAYOUT_RTD = 51;
@@ -127,6 +137,8 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
 
     //バッテリ残量表示
     TextView mBTT;
+    ProgressBar bttBar;
+    TextView mNOWBTT;
 
     //RtD ONOFF
     static boolean RtDFlag = false;
@@ -162,7 +174,7 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.rtd2);
+        setContentView(R.layout.lvon);
         NowLayout = LVON;
 
         //画面常にON
@@ -181,6 +193,8 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
         mERRRR = (TextView) findViewById(R.id.ERRORValueRR);
         mERRRL = (TextView) findViewById(R.id.ERRORValueRL);
         mBTT = (TextView) findViewById(R.id.bttValue);
+        mNOWBTT = (TextView) findViewById(R.id.nowbtt);
+        bttBar = findViewById(R.id.bttBar);
         Bluetooth_Image = findViewById(R.id.bluetooth);
         connectButton = (Button) findViewById(R.id.connectButton);
         connectButton.setOnClickListener(this);
@@ -223,6 +237,23 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
             // 接続されていない場合のみ
             if (!connectFlg) {
                 startService( new Intent( MainActivity.this, Bluetooth.class ) );
+                //電流積算値取得&表示
+                try {
+                    //現在の電流積算値を取得
+                    FileInputStream fileInputStream = openFileInput(CurrFilename);
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(fileInputStream));
+                    String lineBuffer;
+                    while ((lineBuffer = reader.readLine()) != null) {
+                        SUM = lineBuffer;
+                    }
+                    String MAX = String.valueOf(MaxCURR);
+                    String NOWBTT = SUM + "/" + MAX;
+                    ShowMessage(VIEW_NOWBTT, NOWBTT);
+                } catch(FileNotFoundException e){
+                    e.printStackTrace();
+                } catch(IOException e){
+                    e.printStackTrace();
+                }
             }
         }
         else if (v.equals(zeroButton)) {
@@ -230,6 +261,9 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
                 FileOutputStream fos = openFileOutput(CurrFilename, Context.MODE_PRIVATE);
                 String first = "0.0";
                 fos.write(first.getBytes());
+                String MAX = String.valueOf(MaxCURR);
+                String NOWBTT = "0.0/" + MAX;
+                ShowMessage(VIEW_NOWBTT, NOWBTT);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             } catch (IOException e) {
@@ -270,6 +304,8 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
         mERRRR = (TextView) findViewById(R.id.ERRORValueRR);
         mERRRL = (TextView) findViewById(R.id.ERRORValueRL);
         mBTT = (TextView) findViewById(R.id.bttValue);
+        mNOWBTT = (TextView) findViewById(R.id.nowbtt);
+        bttBar = findViewById(R.id.bttBar);
         Bluetooth_Image = findViewById(R.id.bluetooth);
         connectButton = (Button) findViewById(R.id.connectButton);
         connectButton.setOnClickListener(this);
@@ -350,6 +386,13 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
             }
             else if(action == VIEW_BTT){
                 mBTT.setText(msgStr);
+                Log.d("btt","現在のBttは" + msgStr);
+                if(NowLayout == RTD) {
+                    bttBar.setProgress(Integer.parseInt(msgStr)); //バッテリ残量バー更新
+                }
+            }
+            else if(action == VIEW_NOWBTT){
+                mNOWBTT.setText(msgStr);
             }
             else if(action == LAYOUT_RTD){
                 setContentView(R.layout.rtd2);
