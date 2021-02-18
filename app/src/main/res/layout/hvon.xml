@@ -105,31 +105,35 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="36dp"
         android:layout_marginLeft="36dp"
-        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginBottom="8dp"
         android:text="inputValue"
         android:textSize="15sp"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.008"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/bttValue"
         app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/statusValue"
         android:layout_width="360dp"
         android:layout_height="50dp"
+        android:layout_marginStart="128dp"
+        android:layout_marginLeft="128dp"
+        android:layout_marginEnd="731dp"
+        android:layout_marginRight="731dp"
         android:layout_marginBottom="24dp"
         android:text="statusValue"
         android:textColor="@android:color/black"
         android:textSize="15sp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
-        tools:layout_editor_absoluteX="128dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/connectButton"
@@ -201,12 +205,17 @@
         android:id="@+id/bluetoothValue"
         android:layout_width="360dp"
         android:layout_height="50dp"
+        android:layout_marginStart="204dp"
+        android:layout_marginLeft="204dp"
+        android:layout_marginEnd="731dp"
+        android:layout_marginRight="731dp"
         android:text="BluetoothStatus"
         android:textColor="@android:color/black"
         android:textSize="15sp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
-        tools:layout_editor_absoluteX="204dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/MTString"
@@ -308,12 +317,14 @@
         android:id="@+id/RTDValue"
         android:layout_width="128dp"
         android:layout_height="116dp"
+        android:layout_marginStart="554dp"
+        android:layout_marginLeft="554dp"
         android:text="RTD"
         android:textColor="#000000"
         android:textSize="70sp"
         android:visibility="gone"
-        tools:layout_editor_absoluteX="554dp"
-        tools:layout_editor_absoluteY="262dp" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <ImageView
         android:id="@+id/bluetooth"
@@ -402,5 +413,16 @@
         android:textSize="40sp"
         app:layout_constraintBottom_toBottomOf="@+id/INVValue"
         app:layout_constraintEnd_toEndOf="@+id/INVValue" />
+
+    <TextView
+        android:id="@+id/vcminfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="VCMINFO"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/inputValue"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/inputValue"
+        app:layout_constraintTop_toBottomOf="@+id/inputValue" />
 
 </android.support.constraint.ConstraintLayout>

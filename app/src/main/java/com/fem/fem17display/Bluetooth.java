@@ -49,16 +49,16 @@ public class Bluetooth extends Service {
     /* bluetooth UUID */
     final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
 
-    /* デバイス名 */
+    /* デバイス名（ArduinoのBluetooth通信モジュールのデバイス名はRNBT-ADCE） */
     final String DEVICE_NAME = "RNBT-ADCE";
 
     /* Soket */
     BluetoothSocket mSocket;
 
-    /* Thread */
+    /* Bluetooth通信用のThread */
     Thread mThread;
 
-    /* Threadの状態を表す */
+    /* Threadの接続状態を表す */
     boolean isRunning;
 
     //BluetoothのOutputStream.
@@ -70,9 +70,6 @@ public class Bluetooth extends Service {
 
     //NCMB(クラウド)
     NCMBObject objV;
-    NCMBQuery<NCMBObject> queryC;
-    NCMBObject objC;
-    NCMBQuery<NCMBObject> queryM;
 
     //スリープカウント
     int SleepCount = 0;
@@ -89,17 +86,18 @@ public class Bluetooth extends Service {
     double BTT; //計算したバッテリ残量値
     String Battery;
 
-    MainActivity mc = new MainActivity();
 
     @Override
     public void onCreate() {
+        sendBroadcast(VIEW_STATUS, "Bluetooth.java running..."); //デバック用
+
+        // クラウド連携先の設定 ApplicationKey ClientKey
         NCMB.initialize(this.getApplicationContext(), "dcce5f03061b495802c3262b617e1b2b791fc33cf035a3f1d31f3afe51cc0235", "1b81571033e7b1837517aa6c75049d9c42d0069fc8bca01e21c031169f3116c6");
 
         // Bluetoothのデバイス名を取得
         // デバイス名は、RNBT-XXXXになるため、
         // DVICE_NAMEでデバイス名を定義
         mAdapter = BluetoothAdapter.getDefaultAdapter();
-        //mStatusTextView.setText("SearchDevice");
         Set<BluetoothDevice> devices = mAdapter.getBondedDevices();
         for (BluetoothDevice device : devices) {
             if (device.getName().equals(DEVICE_NAME)) {
@@ -108,7 +106,7 @@ public class Bluetooth extends Service {
             }
         }
 
-        //Sound準備コード
+        //Ready to Drive用の効果音準備
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             soundPool = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
         } else {
@@ -127,10 +125,30 @@ public class Bluetooth extends Service {
          * Bluetooth接続スレッド起動
          */
         mThread = new Thread(bluetooth_run);
-        // Threadを起動し、Bluetooth接続
         isRunning = true;
         mThread.start();
     }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        return START_STICKY;
+    }
+
+    @Override
+    public void onDestroy() {
+        try {
+            mSocket.close();
+        } catch (Exception ee) {
+        }
+        isRunning = false;
+        connectFlg = false;
+    }
+
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
+    }
+
 
     /**
      * クラウド送信メッセージ登録
@@ -144,12 +162,15 @@ public class Bluetooth extends Service {
         }
     }
 
+    /**
+     * Bluetooth通信スレッド
+     */
     private Runnable bluetooth_run = new Runnable() {
         @Override
         public void run() {
             InputStream mmInStream = null;
 
-            sendBroadcast(VIEW_STATUS, "Bluetooth Connecting...");
+            sendBroadcast(VIEW_STATUS, "Bluetooth Connecting..."); //デバック用
 
             // 取得したデバイス名を使ってBluetoothでSocket接続
             try {
@@ -159,10 +180,8 @@ public class Bluetooth extends Service {
                  */
                 mSocket = mDevice.createRfcommSocketToServiceRecord(MY_UUID);
                 mSocket.connect();
-                mmInStream = mSocket.getInputStream();
-                mmOutputStream = mSocket.getOutputStream();
-
-                sendBroadcast(VIEW_STATUS, " ");
+                mmInStream = mSocket.getInputStream(); //受信ソケットオープン
+                mmOutputStream = mSocket.getOutputStream(); //送信ソケットオープン
 
                 // InputStreamのバッファを格納
                 byte[] buffer = new byte[1024];
@@ -170,8 +189,8 @@ public class Bluetooth extends Service {
                 // 取得したバッファのサイズを格納
                 int bytes;
 
-                connectFlg = true;
-                if(isSleep) {
+                connectFlg = true; //Bluetooth接続フラグをONに
+                if(isSleep) { //スリープ中であれば画面ON関数を実行
                     WakeUp();
                     isSleep = false;
                 }
@@ -182,9 +201,10 @@ public class Bluetooth extends Service {
                  */
                 while (isRunning) {
 
-                    sendBroadcast(VIEW_BLUETOOTH, "bok");
+                    sendBroadcast(VIEW_BLUETOOTH, "bok"); //Bluetooth接続中画像ON
+                    sendBroadcast(VIEW_STATUS, "Connected"); //デバック用
 
-                    // InputStreamの読み込み
+                    // InputStreamの読み込み（受信情報の読み込み）
                     bytes = mmInStream.read(buffer);
                     Log.i(TAG, "bytes=" + bytes);
                     //String型に変換
@@ -193,12 +213,13 @@ public class Bluetooth extends Service {
                     /**
                      * 情報解析フェーズ
                      */
-                    // 情報が欠損なしで届いていれば解析　届く情報は A/(LV)/(HV)/(MT1),~,(MT4)/(INV)/A その次にB/(RTD1),~(RTD4)/(ERROR1),~,(ERROR4)/B 最後にC/(CURR)/C
+                    // 情報が欠損なしで届いていれば解析　届く情報は A/(LV)/(HV)/(MT1),~,(MT4)/(INV)/A B/(RTD1),~(RTD4)/(ERROR1),~,(ERROR4)/B 最後にC/(CURR)/C
                     if (readMsg.trim().startsWith("A") && readMsg.trim().endsWith("A")) {
-                        sendBroadcast(VIEW_INPUT, readMsg.trim());
+                        sendBroadcast(VIEW_INPUT, readMsg.trim()); //デバック用
+                        //sendBroadcast(VIEW_STATUS, " "); //デバック用
 
-                        objV = new NCMBObject("CLOUD");
-                        sendBroadcast(VIEW_STATUS, " ");
+                        objV = new NCMBObject("CLOUD"); //クラウド送信準備
+
                         String[] values;
                         values = readMsg.trim().split("/", 0);
 
@@ -206,6 +227,7 @@ public class Bluetooth extends Service {
                          * LV解析
                          */
                         if (!values[VIEW_LV].contains("-")) {
+                            // 小数第一位以下を表示しないように文字列切り取り
                             if (Float.parseFloat(values[VIEW_LV]) < 10.0) {
                                 if (values[VIEW_LV].length() >= 3) {
                                     values[VIEW_LV] = values[VIEW_LV].substring(0, 3);
@@ -215,12 +237,12 @@ public class Bluetooth extends Service {
                                     values[VIEW_LV] = values[VIEW_LV].substring(0, 4);
                                 }
                             }
-                            AddCloud("LV", values[VIEW_LV]);
+                            AddCloud("LV", values[VIEW_LV]); //クラウド送信情報として登録
                         }
                         else{
                             values[VIEW_LV] = "-----";
                         }
-                        sendBroadcast(VIEW_LV, values[VIEW_LV]);
+                        sendBroadcast(VIEW_LV, values[VIEW_LV]); //MainActivityに送信し文字列表示
 
                         /**
                          * HV解析
@@ -228,10 +250,10 @@ public class Bluetooth extends Service {
                         if(!values[VIEW_HV].contains("-")) {
                             sendBroadcast(VIEW_HV, values[VIEW_HV]);
                             AddCloud("HV", values[VIEW_HV]);
-                            HVFlag = true;
+                            HVFlag = true; //HVONフラグをON
                         }
                         else{
-                            HVFlag = false;
+                            HVFlag = false; //HVONフラグをON
                             values[VIEW_HV] = "-----";
                         }
                         sendBroadcast(VIEW_HV, values[VIEW_HV]);
@@ -242,13 +264,15 @@ public class Bluetooth extends Service {
                          */
                         String[] MTs;
                         int maxMT = 0;
-                        MTs = values[VIEW_MT].trim().split("x", 0);
+                        MTs = values[VIEW_MT].trim().split("x", 0); //FR,FL,RR,RLの情報に分解
                         for(int n = 0; n < 4; n++){
                             if(!MTs[n].contains("-")) {
                                 MTs[n] = MTs[n].split("\\.", 0)[0]; //整数にする
+                                // 画面には四輪の内の最大値のみ表示する
                                 if (Integer.valueOf(MTs[n]) >= maxMT) {
                                     maxMT = Integer.valueOf(MTs[n]);
                                 }
+                                // クラウドには四輪とも送信
                                 switch (n){
                                     case 0:
                                         AddCloud("MOTOR1", MTs[0]);
@@ -284,7 +308,7 @@ public class Bluetooth extends Service {
                         }
                         sendBroadcast(VIEW_INV, values[VIEW_INV]);
 
-                        // データストアへの登録
+                        // クラウドのデータストアへの登録
                         objV.saveInBackground(new DoneCallback() {
                             @Override
                             public void done(NCMBException e) {
@@ -298,13 +322,13 @@ public class Bluetooth extends Service {
                             }
                         });
                     }
-                    else if (readMsg.trim().startsWith("B") && readMsg.trim().endsWith("B")) {
+                    else if (readMsg.trim().startsWith("B") && readMsg.trim().endsWith("B")) { //届く情報は B/(RTD1),~(RTD4)/(ERROR1),~,(ERROR4)/B
                         int numA = 4;
 
                         sendBroadcast(VIEW_INPUT, readMsg.trim());
 
                         objV = new NCMBObject("CLOUD");
-                        sendBroadcast(VIEW_STATUS, " ");
+                        //sendBroadcast(VIEW_STATUS, " ");
 
                         String[] values;
 
@@ -316,13 +340,13 @@ public class Bluetooth extends Service {
                         String[] RTDs;
                         RTDs = values[VIEW_RTD - numA].trim().split("x", 0);
                         String result_RTD;
-                        if (RTDs[0].contains("1") || RTDs[1].contains("1") || RTDs[2].contains("1") || RTDs[3].contains("1")) {
+                        if (RTDs[0].contains("1") || RTDs[1].contains("1") || RTDs[2].contains("1") || RTDs[3].contains("1")) { //四輪のうち一つでもONであれば実行
                             result_RTD = "RTD";
-                            if (!(RtDFlag)) {
+                            if (!(RtDFlag)) { //RtDがOFF→ONのとき効果音を鳴らす
                                 soundPool.play(RtDsound, 1f, 1f, 0, 0, 1f);
                                 RtDFlag = true;
                             }
-                        } else {
+                        } else { //四輪ともOFFのとき実行
                             result_RTD = "---";
                             if (RtDFlag) {
                                 RtDFlag = false;
@@ -344,10 +368,10 @@ public class Bluetooth extends Service {
                             String[] s_err;
                             s_err = ERRORs[n].split(",", 0);
                             ERRORs[n] = "Error:" + s_err[0] + " Info:[1]" + s_err[1] + " [2]" + s_err[2] + " [3]" + s_err[3];
-                            if(s_err[0].contains("2310")) {
+                            if(s_err[0].contains("2310")) { //特定の情報(2310,d1等)はエラーの数字だけでなくその内容も表示
                                 ERRORs[n] += "\nEncoder communication";
                             }
-                            else if(s_err[0].contains("3587") && !(s_err[1].contains("-"))){
+                            else if(s_err[0].contains("3587") && !(s_err[1].contains("-"))){ //エラー番号が3587かつエラーインフォ1に情報があれば実行
                                 ERRORs[n] += "\nError during operation";
                             }
                             else if(s_err[0].contains("3587")){
@@ -376,7 +400,7 @@ public class Bluetooth extends Service {
                         sendBroadcast(VIEW_ERRFL, ERRORs[1]);
                         sendBroadcast(VIEW_ERRRR, ERRORs[2]);
                         sendBroadcast(VIEW_ERRRL, ERRORs[3]);
-                        if(ERRFlag){
+                        if(ERRFlag){ //ERRORモードの時のみクラウドに送信
                             AddCloud("ERROR1", ERRORs[0]);
                             AddCloud("ERROR2", ERRORs[1]);
                             AddCloud("ERROR3", ERRORs[2]);
@@ -409,13 +433,13 @@ public class Bluetooth extends Service {
                         sendBroadcast(VIEW_INPUT, readMsg.trim());
 
                         objV = new NCMBObject("CLOUD");
-                        sendBroadcast(VIEW_STATUS, " ");
+                        //sendBroadcast(VIEW_STATUS, " ");
 
                         String[] values;
 
                         values = readMsg.trim().split("/", 0);
                         /**
-                         * 電流値解析
+                         * 電流値解析（未完成）
                          */
                         if(!values[1].contains("-")) {
 
@@ -441,7 +465,7 @@ public class Bluetooth extends Service {
 
                             } finally{
                                 //電流積算値を更新
-                                SumCURR = Double.parseDouble(SUM) + Double.parseDouble(values[1]);
+                                SumCURR = Double.parseDouble(SUM) + Math.floor(Double.parseDouble(values[1]));
                                 try {
                                     FileOutputStream fos = openFileOutput(CurrFilename, Context.MODE_PRIVATE);
                                     SUM = String.valueOf(SumCURR);
@@ -460,30 +484,44 @@ public class Bluetooth extends Service {
                                     sendBroadcast(VIEW_BTT, Batteries[0]);   //バッテリ残量表示
                                     AddCloud("BTT", Batteries[0]);   //バッテリ残量クラウド送信
 
-                                    // データストアへの登録
-                                    objV.saveInBackground(new DoneCallback() {
-                                        @Override
-                                        public void done(NCMBException e) {
-                                            if (e != null) {
-                                                //保存に失敗した場合の処理
-                                                e.printStackTrace();
-                                            } else {
-                                                //保存に成功した場合の処理
-
-                                            }
-                                        }
-                                    });
                                 } catch (IOException e) {
 
                                 }
                             }
                             values[1] = "0";
                         }
+                        if(!values[3].contains("-")) {
+                            //VCMから両踏みの情報を得る
+                            sendBroadcast(VIEW_VCMINFO, values[3]);
+                            /**
+                            * BOR解析
+                             */
+                            if(values[3].contains("1")){
+                                AddCloud("BrOvRi", "1");
+                                BORFlag = true;
+                            }
+                            else if(values[3].contains("0")){
+                                AddCloud("BrOvRi", "0");
+                                BORFlag = false;
+                            }
+                        }
+                        // データストアへの登録
+                        objV.saveInBackground(new DoneCallback() {
+                            @Override
+                            public void done(NCMBException e) {
+                                if (e != null) {
+                                    //保存に失敗した場合の処理
+                                    e.printStackTrace();
+                                } else {
+                                    //保存に成功した場合の処理
 
+                                }
+                            }
+                        });
                     }
                     else{
                         //正式なデータが届いていない時の処理
-                        sendBroadcast(VIEW_STATUS, "受信データに問題があります");
+                        //sendBroadcast(VIEW_STATUS, "受信データに問題があります"); //デバック用
                     }
                     /**
                      * レイアウト変更フェーズ
@@ -491,11 +529,14 @@ public class Bluetooth extends Service {
                     LayoutChange();
                     //現在の電流積算値とMAX電流値表示 デバッグ用
                     String MAX = String.valueOf(MaxCURR);
-                    String NOWBTT = SUM + "/" + MAX;
+                    //String NOWBTT = SUM + "/" + MAX;
+                    String NOWBTT = SUM;
                     sendBroadcast(VIEW_NOWBTT, NOWBTT);
                 }
             } catch (Exception e) {
+                sendBroadcast(VIEW_STATUS, "Exception has occurred"); //デバック用
 
+                // Bluetoothソケットを閉じて通信終了
                 try {
                     mSocket.close();
                 } catch (Exception ee) {
@@ -503,12 +544,12 @@ public class Bluetooth extends Service {
                 isRunning = false;
                 connectFlg = false;
 
-                SleepCount++;
-                Log.i(TAG, "SleepCount=" + SleepCount);
-                sendBroadcast(VIEW_INPUT, "error"+ e);
-                sendBroadcast(VIEW_BLUETOOTH, "bno");
+                SleepCount++; //接続失敗連続回数を+1
+                //Log.i(TAG, "SleepCount=" + SleepCount);
+                sendBroadcast(VIEW_INPUT, "error"+ e); //デバック用
+                sendBroadcast(VIEW_BLUETOOTH, "bno"); //Bluetooth接続OFF画像表示
 
-                //Bluetooth未接続ならスリープ状態へ
+                //接続失敗連続回数（スリープカウント）が3回以上なら画面消灯
                 if(SleepCount > 2 && !isSleep) {
                     isSleep = true;
                     if(isWakelock) {
@@ -538,6 +579,12 @@ public class Bluetooth extends Service {
             if(!(NowLayout == ERR)) {
                 //ERRモードに遷移
                 sendBroadcast(LAYOUT_ERR, null);
+            }
+        }
+        else if(BORFlag){
+            if(!(NowLayout == BOR)) {
+                //BORモードに遷移
+                sendBroadcast(LAYOUT_BOR, null);
             }
         }
         else if(RtDFlag && HVFlag){
@@ -570,32 +617,13 @@ public class Bluetooth extends Service {
     }
 
     private void WakeUp() throws IOException {
+        //画面点灯処理
         pm = (PowerManager) getSystemService(POWER_SERVICE);
         wakelock = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK
                 | PowerManager.ACQUIRE_CAUSES_WAKEUP
                 | PowerManager.ON_AFTER_RELEASE, "myapp:Your App Tag");
         wakelock.acquire();
         isWakelock = true;
-    }
-
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        return START_STICKY;
-    }
-
-    @Override
-    public void onDestroy() {
-        try {
-            mSocket.close();
-        } catch (Exception ee) {
-        }
-        isRunning = false;
-        connectFlg = false;
-    }
-
-    @Override
-    public IBinder onBind(Intent intent) {
-        return null;
     }
 
 }

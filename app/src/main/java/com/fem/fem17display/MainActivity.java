@@ -1,10 +1,12 @@
 package com.fem.fem17display;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.admin.DevicePolicyManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
@@ -54,6 +56,7 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
 
     //信号受信時エラーは六番目
     static final int VIEW_ERR = 6;
+
     //Action(ERROR)
     static final int VIEW_ERRFR = 61;
     static final int VIEW_ERRFL = 62;
@@ -72,6 +75,9 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
     //Action(NOWBTT)
     static final int VIEW_NOWBTT = 10;
 
+    //Action(VCMINFO)
+    static final int VIEW_VCMINFO = 11;
+
     //Action(LayoutChange:RTD)
     static final int LAYOUT_RTD = 51;
 
@@ -81,8 +87,11 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
     //Action(LayoutChange:LVON)
     static final int LAYOUT_LVON = 53;
 
-    //Action(LayoutChange:LVON)
+    //Action(LayoutChange:ERROR)
     static final int LAYOUT_ERR = 54;
+
+    //Action(LayoutChange:BORON)
+    static final int LAYOUT_BOR = 55;
 
     //Action(bluetooth)
     static final int VIEW_BLUETOOTH = 100;
@@ -140,6 +149,9 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
     ProgressBar bttBar;
     TextView mNOWBTT;
 
+    //VCMINFO表示
+    TextView mVCMINFO;
+
     //RtD ONOFF
     static boolean RtDFlag = false;
 
@@ -149,6 +161,9 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
     //ERROR ONOFF
     static boolean ERRFlag = false;
 
+    //BOR ONOFF
+    static boolean BORFlag = false;
+
     //bluetooth Image
     ImageView Bluetooth_Image;
 
@@ -157,6 +172,7 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
     static final int HVON = 1;
     static final int RTD = 2;
     static final int ERR = 3;
+    static final int BOR = 4;
     static int NowLayout;
 
     //スリープ関連
@@ -169,17 +185,20 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
     private BroadcastReceiver mReceiver = null;
     private IntentFilter mIntentFilter = null;
 
+    //電流積算値を保存するテキストファイル名の設定
     static final String CurrFilename = "sum.txt";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //画面生成（LVON）
         setContentView(R.layout.lvon);
         NowLayout = LVON;
 
-        //画面常にON
+        //画面常にON 自動でスリープしないように設定
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
+        //テキスト, 画像表示場所設定
         mInputTextView = (TextView) findViewById(R.id.inputValue);
         mStatusTextView = (TextView) findViewById(R.id.statusValue);
         mBluetooth = (TextView) findViewById(R.id.bluetoothValue);
@@ -194,14 +213,17 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
         mERRRL = (TextView) findViewById(R.id.ERRORValueRL);
         mBTT = (TextView) findViewById(R.id.bttValue);
         mNOWBTT = (TextView) findViewById(R.id.nowbtt);
+        mVCMINFO = (TextView) findViewById(R.id.vcminfo);
         bttBar = findViewById(R.id.bttBar);
         Bluetooth_Image = findViewById(R.id.bluetooth);
+
+        //ボタン表示場所設定&クリックリスナー設定
         connectButton = (Button) findViewById(R.id.connectButton);
         connectButton.setOnClickListener(this);
         zeroButton = (Button) findViewById(R.id.zeroButton);
         zeroButton.setOnClickListener(this);
 
-        //スリープ関連
+        //スリープ関連の設定
         mDevicePolicyManager = (DevicePolicyManager)getSystemService(
                 Context.DEVICE_POLICY_SERVICE);
         mComponentName = new ComponentName(this, Admin.class);
@@ -213,7 +235,7 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
             startActivityForResult(intent, ADMIN_INTENT);
         }
 
-        //表示文字列受信用
+        //Bluetooth.javaからの表示文字列受信用
         mReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -221,7 +243,7 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
                 Bundle bundle = intent.getExtras();
                 int VIEW = bundle.getInt("VIEW");
                 String message = bundle.getString("message");
-                ShowMessage(VIEW, message);
+                ShowMessage(VIEW, message); //受信した文字列を表示
             }
         };
         // "BLUETOOTH" Intentフィルターをセット
@@ -231,16 +253,27 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
 
     }
 
+    public void onRestart() {
+        super.onRestart();
+        isSleep = false;
+    }
+
+    public void onDestroy() {
+        super.onDestroy();
+        // Bluetooth.javaを停止し、ArduinoとのBluetooth接続を切る
+        stopService(new Intent(MainActivity.this, Bluetooth.class));
+    }
+
     @Override
     public void onClick(View v) {
-        if (v.equals(connectButton)) {
-            // 接続されていない場合のみ
-            if (!connectFlg) {
+        if (v.equals(connectButton)) { // CONNECTボタンが押されていたら
+            if (!connectFlg) { // 接続されていないとき
+                // Bluetooth.java実行
                 startService( new Intent( MainActivity.this, Bluetooth.class ) );
                 //電流積算値取得&表示
                 try {
                     //現在の電流積算値を取得
-                    FileInputStream fileInputStream = openFileInput(CurrFilename);
+                    FileInputStream fileInputStream = openFileInput(CurrFilename); //電流積算値が保存されているテキストファイルを参照
                     BufferedReader reader = new BufferedReader(new InputStreamReader(fileInputStream));
                     String lineBuffer;
                     while ((lineBuffer = reader.readLine()) != null) {
@@ -256,25 +289,30 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
                 }
             }
         }
-        else if (v.equals(zeroButton)) {
-            try {
-                FileOutputStream fos = openFileOutput(CurrFilename, Context.MODE_PRIVATE);
-                String first = "0.0";
-                fos.write(first.getBytes());
-                String MAX = String.valueOf(MaxCURR);
-                String NOWBTT = "0.0/" + MAX;
-                ShowMessage(VIEW_NOWBTT, NOWBTT);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        else if (v.equals(zeroButton)) { //電流積算値リセットボタンが押されていたら
+            new AlertDialog.Builder(MainActivity.this)
+                    .setTitle("!!!警告!!!")
+                    .setMessage("電流積算値をリセットしてもよろしいですか？")
+                    .setPositiveButton("はい", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            try {
+                                FileOutputStream fos = openFileOutput(CurrFilename, Context.MODE_PRIVATE);
+                                String first = "0.0"; //電流積算値を0に設定
+                                fos.write(first.getBytes());
+                                String MAX = String.valueOf(MaxCURR);
+                                String NOWBTT = "0.0/" + MAX;
+                                ShowMessage(VIEW_NOWBTT, NOWBTT);
+                            } catch (FileNotFoundException e) {
+                                e.printStackTrace();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    })
+                    .setNegativeButton("いいえ", null)
+                    .show();
         }
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
     }
 
     /**
@@ -282,13 +320,16 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
      */
     public void ShowMessage(int VIEW, String MSG) {
         Message valueMsg = new Message();
+        //何の情報かを設定
         valueMsg.what = VIEW;
+        //表示内容を設定
         valueMsg.obj = MSG;
+        //文字列表示ハンドラに送信
         mHandler.sendMessage(valueMsg);
     }
 
     /**
-     *Blutooth再接続
+     *レイアウト遷移時、テキスト等のIdを再取得
      */
     private void RefindId(){
         mInputTextView = (TextView) findViewById(R.id.inputValue);
@@ -305,6 +346,7 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
         mERRRL = (TextView) findViewById(R.id.ERRORValueRL);
         mBTT = (TextView) findViewById(R.id.bttValue);
         mNOWBTT = (TextView) findViewById(R.id.nowbtt);
+        mVCMINFO = (TextView) findViewById(R.id.vcminfo);
         bttBar = findViewById(R.id.bttBar);
         Bluetooth_Image = findViewById(R.id.bluetooth);
         connectButton = (Button) findViewById(R.id.connectButton);
@@ -320,17 +362,6 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
                 Toast.makeText(getApplicationContext(), "Failed to register as Admin", Toast.LENGTH_SHORT).show();
             }
         }
-    }
-
-    public void onRestart() {
-        super.onRestart();
-        //画面常にON
-        isSleep = false;
-    }
-
-    public void onDestroy() {
-        super.onDestroy();
-        stopService(new Intent(MainActivity.this, Bluetooth.class));
     }
 
     /**
@@ -394,6 +425,9 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
             else if(action == VIEW_NOWBTT){
                 mNOWBTT.setText(msgStr);
             }
+            else if(action == VIEW_VCMINFO){
+                mVCMINFO.setText(msgStr);
+            }
             else if(action == LAYOUT_RTD){
                 setContentView(R.layout.rtd2);
                 NowLayout = RTD;
@@ -412,6 +446,11 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
             else if(action == LAYOUT_ERR){
                 setContentView(R.layout.error);
                 NowLayout = ERR;
+                RefindId();
+            }
+            else if(action == LAYOUT_BOR){
+                setContentView(R.layout.bor);
+                NowLayout = BOR;
                 RefindId();
             }
         }

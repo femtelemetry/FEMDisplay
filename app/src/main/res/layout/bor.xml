@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FF0000"
+    android:background="@android:color/holo_blue_dark"
     tools:context=".MainActivity">
 
     <TextView
@@ -14,6 +14,7 @@
         android:text="RL"
         android:textColor="@android:color/background_light"
         android:textSize="40sp"
+        android:visibility="gone"
         app:layout_constraintEnd_toStartOf="@+id/ERRORValueRL"
         app:layout_constraintTop_toBottomOf="@+id/ERRORValueRR" />
 
@@ -24,6 +25,7 @@
         android:text="RR"
         android:textColor="@android:color/background_light"
         android:textSize="40sp"
+        android:visibility="gone"
         app:layout_constraintEnd_toStartOf="@+id/ERRORValueRR"
         app:layout_constraintTop_toTopOf="@+id/ERRORValueRR" />
 
@@ -34,6 +36,7 @@
         android:text="FL"
         android:textColor="@android:color/background_light"
         android:textSize="40sp"
+        android:visibility="gone"
         app:layout_constraintEnd_toStartOf="@+id/ERRORValueFL"
         app:layout_constraintTop_toTopOf="@+id/ERRORValueFL" />
 
@@ -53,6 +56,7 @@
         android:text="---------------------------\n---------------------------"
         android:textColor="#FFFFFF"
         android:textSize="20sp"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/MTString"
         app:layout_constraintHorizontal_bias="0.0"
@@ -69,6 +73,7 @@
         android:text="---------------------------\n---------------------------"
         android:textColor="#FFFFFF"
         android:textSize="20sp"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/MTString"
         app:layout_constraintHorizontal_bias="0.0"
@@ -84,6 +89,7 @@
         android:text="---------------------------\n---------------------------"
         android:textColor="#FFFFFF"
         android:textSize="20sp"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/MTString"
         app:layout_constraintHorizontal_bias="0.0"
@@ -276,12 +282,14 @@
         android:id="@+id/ERRORString"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="324dp"
+        android:layout_marginRight="324dp"
         android:fontFamily="@font/acme"
-        android:text="エラー"
+        android:text="両踏み"
         android:textColor="#FFFFFF"
         android:textSize="90sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/imageView2"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/imageView3"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0" />
@@ -296,6 +304,7 @@
         android:text="---------------------------\n---------------------------"
         android:textColor="#FFFFFF"
         android:textSize="20sp"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/MTString"
         app:layout_constraintHorizontal_bias="0.0"
@@ -346,29 +355,21 @@
 
     <ImageView
         android:id="@+id/imageView2"
-        android:layout_width="90sp"
-        android:layout_height="90sp"
-        android:layout_marginEnd="200dp"
-        android:layout_marginRight="200dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_width="127dp"
+        android:layout_height="127dp"
+        app:layout_constraintBottom_toBottomOf="@+id/ERRORString"
+        app:layout_constraintStart_toEndOf="@+id/ERRORString"
         app:layout_constraintTop_toTopOf="@+id/ERRORString"
-        app:layout_constraintVertical_bias="0.050000012"
-        app:srcCompat="@drawable/icon0079" />
+        app:srcCompat="@drawable/footprint" />
 
     <ImageView
         android:id="@+id/imageView3"
-        android:layout_width="90sp"
-        android:layout_height="90sp"
-        android:layout_marginStart="7dp"
-        android:layout_marginLeft="7dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        android:layout_width="127dp"
+        android:layout_height="127dp"
+        app:layout_constraintBottom_toBottomOf="@+id/ERRORString"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.050000012"
-        app:srcCompat="@drawable/icon0079" />
+        app:layout_constraintTop_toTopOf="@+id/ERRORString"
+        app:srcCompat="@drawable/footprint" />
 
     <TextView
         android:id="@+id/textView10"
@@ -425,6 +426,7 @@
         android:text="FR"
         android:textColor="@android:color/background_light"
         android:textSize="40sp"
+        android:visibility="gone"
         app:layout_constraintEnd_toStartOf="@+id/ERRORValueFR"
         app:layout_constraintTop_toTopOf="@+id/ERRORValueFR" />
 
@@ -437,5 +439,18 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@+id/inputValue"
         app:layout_constraintTop_toBottomOf="@+id/inputValue" />
+
+    <TextView
+        android:id="@+id/textView14"
+        android:layout_width="403dp"
+        android:layout_height="101dp"
+        android:text="シャットダウンボタンを押してください"
+        android:textColor="@android:color/background_light"
+        android:textSize="36sp"
+        app:layout_constraintBottom_toTopOf="@+id/inputValue"
+        app:layout_constraintEnd_toStartOf="@+id/MTString"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ERRORString"
+        app:layout_constraintVertical_bias="0.13" />
 
 </android.support.constraint.ConstraintLayout>

@@ -23,7 +23,7 @@
         app:layout_constraintVertical_bias="0.0" />
 
     <TextView
-        android:id="@+id/nowbtt"
+        android:id="@+id/bttValue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Now/Max"
@@ -56,13 +56,13 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.fem.fem17display.MagicTextView
-        android:id="@+id/bttValue"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:id="@+id/nowbtt"
+        android:layout_width="555dp"
+        android:layout_height="273dp"
         android:layout_marginBottom="4dp"
-        android:text="---"
+        android:text="-------------------"
         android:textColor="#000000"
-        android:textSize="300sp"
+        android:textSize="100sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.367"
@@ -406,5 +406,15 @@
         app:layout_constraintTop_toTopOf="@+id/textView12"
         app:strokeColor="@android:color/background_light"
         app:strokeWidth="1dp" />
+
+    <TextView
+        android:id="@+id/vcminfo"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="VCMINFO"
+        android:textColor="@android:color/background_dark"
+        app:layout_constraintEnd_toEndOf="@+id/inputValue"
+        app:layout_constraintStart_toStartOf="@+id/inputValue"
+        app:layout_constraintTop_toBottomOf="@+id/inputValue" />
 
 </android.support.constraint.ConstraintLayout>
