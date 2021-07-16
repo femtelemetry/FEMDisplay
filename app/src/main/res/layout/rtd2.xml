@@ -7,26 +7,33 @@
     android:background="#CDDC39"
     tools:context=".MainActivity">
 
+    <Button
+        android:id="@+id/btButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Button"
+        android:visibility="gone" />
+
     <ProgressBar
         android:id="@+id/bttBar"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:max="100"
-        android:progress="100"
+        android:progress="60"
         android:progressDrawable="@drawable/custom_progress"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="1.0" />
 
     <TextView
         android:id="@+id/bttValue"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Now/Max"
+        android:layout_width="26dp"
+        android:layout_height="16dp"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -57,16 +64,17 @@
 
     <com.fem.fem17display.MagicTextView
         android:id="@+id/nowbtt"
-        android:layout_width="555dp"
-        android:layout_height="273dp"
-        android:layout_marginBottom="4dp"
-        android:text="-------------------"
+        android:layout_width="wrap_content"
+        android:layout_height="332dp"
+        android:gravity="center"
+        android:text="-----"
         android:textColor="#000000"
-        android:textSize="100sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:textSize="300sp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/bttBar"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.367"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/bttBar"
+        app:layout_constraintTop_toTopOf="@+id/bttBar"
         app:strokeColor="@android:color/background_light"
         app:strokeWidth="6dp" />
 
@@ -114,7 +122,7 @@
         android:text="inputValue"
         android:textColor="@android:color/black"
         android:textSize="15sp"
-        android:visibility="visible"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.008"
@@ -132,7 +140,7 @@
         android:text="statusValue"
         android:textColor="@android:color/black"
         android:textSize="15sp"
-        android:visibility="gone"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/RTDValue"
         app:layout_constraintHorizontal_bias="0.127"
@@ -200,16 +208,15 @@
     <TextView
         android:id="@+id/HVValue"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:background="@android:drawable/alert_light_frame"
-        android:text="------"
+        android:layout_height="354dp"
+        android:text="-----"
         android:textColor="@android:color/black"
-        android:textSize="70sp"
-        android:visibility="gone"
-        app:layout_constraintStart_toStartOf="@+id/HVstring"
-        app:layout_constraintTop_toBottomOf="@+id/HVstring" />
+        android:textSize="300sp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/bluetoothValue"
@@ -240,23 +247,6 @@
         app:strokeWidth="1dp" />
 
     <com.fem.fem17display.MagicTextView
-        android:id="@+id/MTValue"
-        android:layout_width="267dp"
-        android:layout_height="169dp"
-        android:text="------"
-        android:textColor="#000000"
-        android:textSize="150sp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.034"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.809"
-        app:strokeColor="@android:color/background_light"
-        app:strokeWidth="2dp" />
-
-    <com.fem.fem17display.MagicTextView
         android:id="@+id/INVString"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -265,28 +255,10 @@
         android:textSize="50sp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/INVValue"
-        app:layout_constraintHorizontal_bias="0.071"
-        app:layout_constraintStart_toStartOf="@+id/INVValue"
         app:layout_constraintTop_toTopOf="parent"
         app:strokeColor="@android:color/background_light"
-        app:strokeWidth="1dp" />
-
-    <com.fem.fem17display.MagicTextView
-        android:id="@+id/INVValue"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="------"
-        android:textColor="#000000"
-        android:textSize="150sp"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.576"
-        app:layout_constraintStart_toEndOf="@+id/MTValue"
-        app:layout_constraintTop_toTopOf="@+id/MTValue"
-        app:strokeColor="@android:color/background_light"
-        app:strokeWidth="2dp" />
+        app:strokeWidth="1dp"
+        tools:layout_editor_absoluteX="432dp" />
 
     <TextView
         android:id="@+id/ERRORString"
@@ -319,7 +291,6 @@
         android:id="@+id/RTDString"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:layout_marginEnd="160dp"
         android:layout_marginRight="160dp"
         android:background="@android:drawable/alert_light_frame"
@@ -328,24 +299,24 @@
         android:textSize="30sp"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/INVValue"
         app:strokeColor="@android:color/background_light"
-        app:strokeWidth="2dp"/>
+        app:strokeWidth="2dp"
+        tools:layout_editor_absoluteY="333dp" />
 
     <com.fem.fem17display.MagicTextView
         android:id="@+id/RTDValue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="276dp"
-        android:text="---"
-        android:textColor="#000000"
+        android:background="@android:color/background_dark"
+        android:focusableInTouchMode="false"
+        android:text="-----"
+        android:textColor="#FFFFFF"
         android:textSize="70sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/textView11"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.905"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/bluetooth"
-        app:layout_constraintVertical_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/nowbtt"
+        app:layout_constraintTop_toBottomOf="@+id/bluetooth"
+        app:layout_constraintVertical_bias="0.19999999"
         app:strokeColor="@android:color/background_light"
         app:strokeWidth="2dp" />
 
@@ -355,6 +326,7 @@
         android:layout_height="45dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
+        android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/bluetooth_no" />
@@ -363,7 +335,7 @@
         android:id="@+id/textView11"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="%"
+        android:text="V"
         android:textColor="#000000"
         android:textSize="80sp"
         app:layout_constraintBottom_toBottomOf="@+id/bttValue"
@@ -402,19 +374,107 @@
         android:textColor="#000000"
         android:textSize="80sp"
         android:visibility="gone"
-        app:layout_constraintStart_toEndOf="@+id/INVValue"
         app:layout_constraintTop_toTopOf="@+id/textView12"
         app:strokeColor="@android:color/background_light"
-        app:strokeWidth="1dp" />
+        app:strokeWidth="1dp"
+        tools:layout_editor_absoluteX="432dp" />
 
     <TextView
         android:id="@+id/vcminfo"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="VCMINFO"
+        android:text="vcminfo"
         android:textColor="@android:color/background_dark"
+        android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="@+id/inputValue"
         app:layout_constraintStart_toStartOf="@+id/inputValue"
         app:layout_constraintTop_toBottomOf="@+id/inputValue" />
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/HitempLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="143dp"
+        android:layout_marginTop="16dp"
+        android:background="@android:drawable/editbox_dropdown_light_frame"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/bttBar">
+
+        <TextView
+            android:id="@+id/MTValue"
+            android:layout_width="270dp"
+            android:layout_height="167dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginBottom="8dp"
+            android:fontFamily="sans-serif-medium"
+            android:text="----"
+            android:textColor="#D50000"
+            android:textSize="150sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/textView18" />
+
+        <TextView
+            android:id="@+id/textView18"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginBottom="3dp"
+            android:background="#D50000"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center"
+            android:text="M\nT"
+            android:textColor="#FFFFFF"
+            android:textSize="40sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/INVValue"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/imageView7"
+            android:layout_width="145dp"
+            android:layout_height="141dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/_007077" />
+
+        <TextView
+            android:id="@+id/textView17"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginBottom="3dp"
+            android:background="#D50000"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center"
+            android:text="I\nN\nV"
+            android:textColor="#FFFEFE"
+            android:textSize="40sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/imageView7"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/INVValue"
+            android:layout_width="175dp"
+            android:layout_height="167dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginBottom="8dp"
+            android:text="---"
+            android:textColor="#D50000"
+            android:textSize="150sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/textView17" />
+    </android.support.constraint.ConstraintLayout>
 
 </android.support.constraint.ConstraintLayout>

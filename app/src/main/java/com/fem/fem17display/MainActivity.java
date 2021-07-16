@@ -1,17 +1,16 @@
 package com.fem.fem17display;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.app.admin.DevicePolicyManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -21,16 +20,6 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-
-import static com.fem.fem17display.Bluetooth.MaxCURR;
-import static com.fem.fem17display.Bluetooth.SUM;
 
 public class MainActivity extends AppCompatActivity  implements View.OnClickListener {
     /* tag */
@@ -93,6 +82,9 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
     //Action(LayoutChange:BORON)
     static final int LAYOUT_BOR = 55;
 
+    //Action(LayoutVisible:HITEMP)
+    static final int LAYOUT_HITEMP = 56;
+
     //Action(bluetooth)
     static final int VIEW_BLUETOOTH = 100;
 
@@ -102,14 +94,20 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
     //Showmessageする文字列の受け渡し用
     static String msg;
 
-    //Bluetooth接続確認用フラグ
-    static boolean connectFlg = false;
+    //HTTPSサービス確認用フラグ
+    static boolean isSerHTTPS = false;
+
+    //BLUETOOTHサービス確認用フラグ
+    static boolean isSerBT = false;
 
     //接続ボタン
     Button connectButton;
 
     //電流積算リセットボタン
     Button zeroButton;
+
+    //BLUETOOTHONボタン
+    Button btButton;
 
     //ステータス
     TextView mStatusTextView;
@@ -152,6 +150,9 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
     //VCMINFO表示
     TextView mVCMINFO;
 
+    //高温時レイアウト
+    ConstraintLayout mHitemp;
+
     //RtD ONOFF
     static boolean RtDFlag = false;
 
@@ -163,6 +164,9 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
 
     //BOR ONOFF
     static boolean BORFlag = false;
+
+    //HI TMPERATURE
+    static boolean isHITEMP = false;
 
     //bluetooth Image
     ImageView Bluetooth_Image;
@@ -181,9 +185,16 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
     static ComponentName mComponentName;
     static boolean isSleep = false;
 
+    //以下使わない
+    static boolean isSleeping = false;
+    static boolean isBT = false;
+    static boolean isHTTPS = false;
+
     //クラス間のmessageやり取り用
     private BroadcastReceiver mReceiver = null;
+    private BroadcastReceiver mReceiver2 = null;
     private IntentFilter mIntentFilter = null;
+    private IntentFilter mIntentFilter2 = null;
 
     //電流積算値を保存するテキストファイル名の設定
     static final String CurrFilename = "sum.txt";
@@ -216,12 +227,15 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
         mVCMINFO = (TextView) findViewById(R.id.vcminfo);
         bttBar = findViewById(R.id.bttBar);
         Bluetooth_Image = findViewById(R.id.bluetooth);
+        mHitemp = findViewById(R.id.HitempLayout);
 
         //ボタン表示場所設定&クリックリスナー設定
         connectButton = (Button) findViewById(R.id.connectButton);
         connectButton.setOnClickListener(this);
-        zeroButton = (Button) findViewById(R.id.zeroButton);
-        zeroButton.setOnClickListener(this);
+        //zeroButton = (Button) findViewById(R.id.zeroButton);
+        //zeroButton.setOnClickListener(this);
+        btButton = (Button) findViewById(R.id.btButton);
+        btButton.setOnClickListener(this);
 
         //スリープ関連の設定
         mDevicePolicyManager = (DevicePolicyManager)getSystemService(
@@ -248,9 +262,27 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
         };
         // "BLUETOOTH" Intentフィルターをセット
         mIntentFilter = new IntentFilter();
+        //mIntentFilter.addAction("BLUETOOTH");
         mIntentFilter.addAction("BLUETOOTH");
         registerReceiver(mReceiver, mIntentFilter);
 
+        /*
+        //HTTPSRequest.javaからの表示文字列受信用
+        mReceiver2 = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context2, Intent intent2) {
+                // このonReceiveでMainServiceからのIntentを受信する。
+                Bundle bundle2 = intent2.getExtras();
+                int VIEW2 = bundle2.getInt("VIEW2");
+                String message2 = bundle2.getString("message2");
+                ShowMessage(VIEW2, message2); //受信した文字列を表示
+            }
+        };
+        // "HTTPS" Intentフィルターをセット
+        mIntentFilter2 = new IntentFilter();
+        mIntentFilter2.addAction("HTTPS");
+        registerReceiver(mReceiver2, mIntentFilter2);
+        */
     }
 
     public void onRestart() {
@@ -260,16 +292,22 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
 
     public void onDestroy() {
         super.onDestroy();
-        // Bluetooth.javaを停止し、ArduinoとのBluetooth接続を切る
-        stopService(new Intent(MainActivity.this, Bluetooth.class));
+        /*if (isSerHTTPS) {
+            // HTTPSRequest.javaを停止
+            stopService(new Intent(MainActivity.this, HTTPSRequest.class));
+        }*/
+        if(isSerBT){
+            // Bluetooth.javaを停止
+            stopService(new Intent(MainActivity.this, Bluetooth.class));
+        }
     }
 
     @Override
     public void onClick(View v) {
-        if (v.equals(connectButton)) { // CONNECTボタンが押されていたら
-            if (!connectFlg) { // 接続されていないとき
-                // Bluetooth.java実行
-                startService( new Intent( MainActivity.this, Bluetooth.class ) );
+        /*if (v.equals(connectButton)) { // CONNECTボタンが押されていたら
+            if (!isSerHTTPS) { // サービス実行されていないとき
+                // HTTPSRequest.java実行
+                startService( new Intent( MainActivity.this, HTTPSRequest.class ) );
                 //電流積算値取得&表示
                 try {
                     //現在の電流積算値を取得
@@ -287,8 +325,15 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
                 } catch(IOException e){
                     e.printStackTrace();
                 }
+
             }
-        }
+        }*/
+        if (v.equals(btButton)) { // btCONNECTボタンが押されていたら
+            if (!isBT) { // 接続されていないとき
+                // bluetooth.java実行
+                startService(new Intent(MainActivity.this, Bluetooth.class));
+            }
+        }/*
         else if (v.equals(zeroButton)) { //電流積算値リセットボタンが押されていたら
             new AlertDialog.Builder(MainActivity.this)
                     .setTitle("!!!警告!!!")
@@ -312,7 +357,7 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
                     })
                     .setNegativeButton("いいえ", null)
                     .show();
-        }
+        }*/
     }
 
     /**
@@ -349,8 +394,11 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
         mVCMINFO = (TextView) findViewById(R.id.vcminfo);
         bttBar = findViewById(R.id.bttBar);
         Bluetooth_Image = findViewById(R.id.bluetooth);
+        mHitemp = findViewById(R.id.HitempLayout);
         connectButton = (Button) findViewById(R.id.connectButton);
         connectButton.setOnClickListener(this);
+        btButton = (Button) findViewById(R.id.btButton);
+        btButton.setOnClickListener(this);
     }
 
     @Override
@@ -452,6 +500,16 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
                 setContentView(R.layout.bor);
                 NowLayout = BOR;
                 RefindId();
+            }
+            else if(action == LAYOUT_HITEMP){
+                if(RtDFlag){
+                    if(msgStr.contains("YES")){
+                        mHitemp.setVisibility(View.VISIBLE);
+                    }
+                    else if(msgStr.contains("NO")){
+                        mHitemp.setVisibility(View.INVISIBLE);
+                    }
+                }
             }
         }
     };

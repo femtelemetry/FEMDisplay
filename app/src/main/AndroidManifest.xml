@@ -25,6 +25,7 @@
             </intent-filter>
         </activity>
         <service android:name="com.fem.fem17display.Bluetooth" />
+        <service android:name="com.fem.fem17display.HTTPSRequest" />
         <receiver
             android:name=".Admin"
             android:permission="android.permission.BIND_DEVICE_ADMIN">
